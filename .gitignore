@@ -1,0 +1,23 @@
+.DS_Store
+Desktop/
+Pictures/
+Videos/
+Documents/
+Public/
+Downloads/
+Music/
+Templates/
+Новая папка/
+.cache/
+.config/
+.dbus
+.gvfs/
+.local/
+.ros/
+.vnc/
+.bashrc
+.ICEauthority
+.Xauthority
+.course-kit/
+robotics-course-kit-v1.tar.gz
+robotics-course-kit-v1.tar.gz.sha256.txt
