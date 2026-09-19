@@ -1,0 +1,12 @@
+{
+    "launch_method": "docker",
+    "os_version": "Ubuntu 26.04.1 LTS",
+    "ros_distribution": "lyrical",
+    "gazebo_version": "10.5.0",
+    "rmw_implementation": "rmw_fastrtps_cpp",
+    "domains_used": [
+        0,
+        17
+    ],
+    "docker_digest": "sha256:e8d5bdd40436c0cf960f2610715241fe5c27e7981a0db2f183d0ba0b03a3fc79"
+}

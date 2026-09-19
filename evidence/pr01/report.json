@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR01",
+  "commit": "6e3bdf132afad6e3031a4dbbf4ac4283baf92a33",
+  "course_kit": {
+    "version": "v1-w02",
+    "archive_sha256": "5d210c431e32418f45e2cffa9dd2028116c7a9520a36f3c7079c778cd73437a8"
+  },
+  "commands": [
+    "source /opt/ros/lyrical/setup.bash",
+    "export ROS_DOMAIN_ID=0",
+    "ros2 doctor --report > evidence/pr01/doctor.txt 2>&1",
+    "ros2 run turtlesim turtlesim_node",
+    "ros2 run turtlesim turtle_teleop_key",
+    "ros2 node list --no-daemon --spin-time 2",
+    "ros2 topic list -t",
+    "ros2 node info /turtlesim",
+    "ros2 topic type /turtle1/pose",
+    "POSE_TYPE=$(ros2 topic type /turtle1/pose)",
+    "ros2 topic echo /turtle1/pose --once",
+    "ros2 topic hz /turtle1/pose",
+    "export ROS_DOMAIN_ID=17",
+    "timeout 5s ros2 topic echo /turtle1/pose \"$POSE_TYPE\" --once"
+  ],
+  "tests": [
+    {
+      "name": "Проверка графа: ros2 node list показывает /turtlesim и /teleop_turtle",
+      "status": "passed"
+    },
+    {
+      "name": "Проверка топиков: ros2 topic list -t показывает /turtle1/pose типа turtlesim_msgs/msg/Pose",
+      "status": "passed"
+    },
+    {
+      "name": "Измерение частоты: ros2 topic hz /turtle1/pose показывает ~62 Гц",
+      "status": "passed"
+    },
+    {
+      "name": "Воспроизведение разрыва связи: teleop на домене 17, симулятор на 0, exit=124",
+      "status": "passed"
+    },
+    {
+      "name": "Восстановление связи: teleop на домене 0, exit=0",
+      "status": "passed"
+    },
+    {
+      "name": "Валидация environment.json через python3 -m json.tool",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "В терминале B выполнен export ROS_DOMAIN_ID=17 и запущен ros2 run turtlesim turtle_teleop_key. В терминале C выполнен timeout 5s ros2 topic echo /turtle1/pose \"$POSE_TYPE\" --once. Результат: поза не приходит, команда завершается с exit=124 (таймаут). В node list видна только нода /teleop_turtle, ноды /turtlesim нет.",
+    "root_cause": "Переменная окружения ROS_DOMAIN_ID считывается процессом только в момент запуска. Симулятор /turtlesim был запущен в домене 0 и продолжал работать там. Когда teleop перезапустили в домене 17, он попал в другую область обнаружения и перестал видеть симулятор. Симулятор перезапускать не потребовалось, так как он уже работал в нужном домене 0.",
+    "proof_after": "В терминале B выполнен export ROS_DOMAIN_ID=0 и перезапущен ros2 run turtlesim turtle_teleop_key. В терминале C выполнена та же команда timeout 5s ros2 topic echo /turtle1/pose \"$POSE_TYPE\" --once. Результат: поза успешно пришла (x, y, theta, linear_velocity, angular_velocity), команда завершилась с exit=0. В node list видны обе ноды: /turtlesim и /teleop_turtle."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 3
+  },
+  "ai_used": false
+}
