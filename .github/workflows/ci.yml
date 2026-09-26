@@ -5,7 +5,18 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    container:
+      image: osrf/ros:lyrical-desktop-full
     steps:
+      - name: Prepare Node for checkout
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates curl xz-utils
+          curl -fsSLo /tmp/node.tar.xz https://nodejs.org/dist/v22.19.0/node-v22.19.0-linux-x64.tar.xz
+          printf '%s  %s\n' c0649af18e6a24f6fe5535a3e86b341dd49a8e71117c8b68bde973ef834f16f2 /tmp/node.tar.xz | sha256sum -c -
+          tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -13,6 +24,15 @@ jobs:
       - name: Validate environment JSON
         shell: bash
         run: python3 -m json.tool evidence/pr01/environment.json > /dev/null
+      
+      - name: Build PR02 launch package
+        shell: bash
+        run: |
+          source /opt/ros/lyrical/setup.bash
+          colcon build --symlink-install --packages-select turtle_bringup
+          source install/setup.bash
+          test -f "$(ros2 pkg prefix turtle_bringup)/share/turtle_bringup/launch/sim.launch.py"
+          python3 -m py_compile src/turtle_bringup/launch/sim.launch.py
 
       - name: Download course kit
         shell: bash
@@ -26,3 +46,7 @@ jobs:
       - name: Check PR evidence
         shell: bash
         run: python3 .course-kit/v1/tools/check_practice.py PR01 --submission .
+
+      - name: Check PR02 evidence
+        shell: bash
+        run: python3 .course-kit/v1/tools/check_practice.py PR02 --submission .

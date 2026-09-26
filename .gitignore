@@ -21,3 +21,6 @@ Templates/
 .course-kit/
 robotics-course-kit-v1.tar.gz
 robotics-course-kit-v1.tar.gz.sha256.txt
+build/
+install/
+log/
