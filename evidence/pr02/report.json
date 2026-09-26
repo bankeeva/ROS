@@ -1,0 +1,97 @@
+{
+    "schema_version": 1,
+    "practice_id": "PR02",
+    "commit": "3002df7858882da95c50af28a4054572a9fb6407",
+    "course_kit": {
+        "version": "v1-w03",
+        "archive_sha256": "5d210c431e32418f45e2cffa9dd2028116c7a9520a36f3c7079c778cd73437a8"
+    },
+    "commands": [
+        "source /opt/ros/lyrical/setup.bash",
+        "export ROS_DOMAIN_ID=7",
+        "cd \"$(git rev-parse --show-toplevel)\"",
+        "mkdir -p src evidence/pr02",
+        "printenv ROS_DISTRO ROS_DOMAIN_ID",
+        "ros2 pkg prefix turtlesim",
+        "cd src",
+        "ros2 pkg create --build-type ament_python --license Apache-2.0 turtle_bringup --dependencies launch launch_ros turtlesim",
+        "cd ..",
+        "set -o pipefail",
+        "colcon build --symlink-install --packages-select turtle_bringup 2>&1 | tee evidence/pr02/build-empty.txt",
+        "source install/setup.bash",
+        "ros2 pkg prefix turtle_bringup",
+        "colcon build --symlink-install --packages-select turtle_bringup 2>&1 | tee evidence/pr02/build.txt",
+        "ls \"$(ros2 pkg prefix turtle_bringup)/share/turtle_bringup/launch\"",
+        "ros2 launch turtle_bringup sim.launch.py",
+        "ros2 node list --no-daemon --spin-time 2",
+        "ros2 interface show geometry_msgs/msg/Twist",
+        "ros2 topic type /turtle1/pose",
+        "ros2 topic echo /turtle1/pose --once",
+        "ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'",
+        "ros2 topic pub --rate 1 --wait-matching-subscriptions 0 /cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'",
+        "ros2 topic info /cmd_vel --verbose",
+        "ros2 topic info /turtle1/cmd_vel --verbose",
+        "ros2 topic pub --rate 1 --wait-matching-subscriptions 0 /turtle1/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'"
+    ],
+    "tests": [
+        {
+            "name": "Сборка пустого пакета: colcon build завершается успешно, лог сохранён в build-empty.txt",
+            "status": "passed"
+        },
+        {
+            "name": "Сборка с launch-файлом: colcon build завершается успешно, лог сохранён в build.txt",
+            "status": "passed"
+        },
+        {
+            "name": "Обнаружение пакета: ros2 pkg prefix turtle_bringup указывает на install/ workspace",
+            "status": "passed"
+        },
+        {
+            "name": "Установка launch: ls показывает sim.launch.py в share/turtle_bringup/launch",
+            "status": "passed"
+        },
+        {
+            "name": "Запуск launch: ros2 launch turtle_bringup sim.launch.py открывает окно turtlesim",
+            "status": "passed"
+        },
+        {
+            "name": "Проверка графа: ros2 node list показывает /turtlesim",
+            "status": "passed"
+        },
+        {
+            "name": "Остановка launch: Ctrl+C закрывает окно turtlesim",
+            "status": "passed"
+        },
+        {
+            "name": "Доставка команды: ros2 topic pub --once в /turtle1/cmd_vel вызывает изменение позы",
+            "status": "passed"
+        },
+        {
+            "name": "Воспроизведение сбоя: публикация в /cmd_vel не двигает черепашку, Subscription count: 0",
+            "status": "passed"
+        },
+        {
+            "name": "Восстановление связи: публикация в /turtle1/cmd_vel после исправления имени двигает черепашку, Subscription count: 1",
+            "status": "passed"
+        },
+        {
+            "name": "Валидация launch-файла: python3 -m py_compile sim.launch.py без ошибок",
+            "status": "passed"
+        }
+    ],
+    "defect": {
+        "reproducer": "В Терминале B выполнена команда ros2 topic pub --rate 1 --wait-matching-subscriptions 0 /cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'. Издатель публикует сообщения, но в Терминале A черепашка не двигается. ros2 topic info /cmd_vel --verbose показывает Publisher count: 1, Subscription count: 0.",
+        "root_cause": "Издатель публикует в топик /cmd_vel, но turtlesim подписан на /turtle1/cmd_vel. Тип сообщения (geometry_msgs/msg/Twist) совпадает, но полное имя топика разное. В ROS 2 коммуникация происходит только при совпадении обоих параметров — имени топика и типа сообщения. Без namespace 'turtle1/' издатель попадает в другую 'комнату', где подписчиков нет.",
+        "proof_after": "В Терминале B издатель остановлен (Ctrl+C) и перезапущен с исправленным именем: ros2 topic pub --rate 1 --wait-matching-subscriptions 0 /turtle1/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 1.0}, angular: {z: 0.5}}'. ros2 topic info /turtle1/cmd_vel --verbose показывает Publisher count: 1, Subscription count: 1, Node name: turtlesim. Черепашка начала двигаться."
+    },
+    "claims": {
+        "public_tests_passed": true,
+        "defect_reproduced": true,
+        "defect_fixed": true
+    },
+    "time": {
+        "contact_academic_hours": 2,
+        "self_study_hours": 2
+    },
+    "ai_used": true
+}
