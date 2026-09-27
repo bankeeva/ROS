@@ -1,6 +1,76 @@
 {
-    "commit": "e181aa412a50c919542c1f781b9c5104c8abb123",
-    "public_tests_passed": true,
-    "defect_reproduced": true,
-    "defect_fixed": true
+    "schema_version": 1,
+    "practice_id": "PR03",
+    "commit": "bf2dd0e3206b3fb6ed3b62a5cf2dab6cab213e12",
+    "course_kit": {
+        "version": "v1-w03",
+        "archive_sha256": "5d210c431e32418f45e2cffa9dd2028116c7a9520a36f3c7079c778cd73437a8"
+    },
+    "commands": [
+        "source /opt/ros/lyrical/setup.bash",
+        "export ROS_DOMAIN_ID=7",
+        "cd \"$(git rev-parse --show-toplevel)\"",
+        "mkdir -p src evidence/pr03",
+        "printenv ROS_DISTRO ROS_DOMAIN_ID",
+        "ros2 topic type /turtle1/pose",
+        "cd src",
+        "ros2 pkg create --build-type ament_python --node-name patrol patrol --dependencies rclpy geometry_msgs",
+        "cd ..",
+        "colcon build --symlink-install --packages-select patrol",
+        "source install/setup.bash",
+        "python3 -m pytest src/patrol/test/test_command.py -v",
+        "ros2 run turtlesim turtlesim_node",
+        "ros2 run patrol patrol",
+        "ros2 node info /patrol",
+        "ros2 topic info /turtle1/cmd_vel --verbose",
+        "ros2 topic hz /turtle1/cmd_vel",
+        "ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel",
+        "ros2 topic info /turtle1/cmd_vel --verbose",
+        "ros2 topic hz /turtle1/cmd_vel"
+    ],
+    "tests": [
+        {
+            "name": "Сборка пакета: colcon build завершается успешно",
+            "status": "passed"
+        },
+        {
+            "name": "Тесты pytest: test_no_pose_gives_zero_command, test_with_pose_gives_nonzero_command, test_command_sign_and_units_preserved проходят",
+            "status": "passed"
+        },
+        {
+            "name": "Запуск ноды: ros2 run patrol patrol регистрирует ноду /patrol в графе",
+            "status": "passed"
+        },
+        {
+            "name": "Подписка: /patrol подписан на /turtle1/pose типа turtlesim_msgs/msg/Pose",
+            "status": "passed"
+        },
+        {
+            "name": "Воспроизведение сбоя: без remap публикация идёт в /cmd_vel, turtlesim не получает команд, Publisher count: 0 на /turtle1/cmd_vel",
+            "status": "passed"
+        },
+        {
+            "name": "Восстановление связи: с remap cmd_vel:=/turtle1/cmd_vel публикация идёт в правильный топик, Publisher count: 1, черепаха двигается",
+            "status": "passed"
+        },
+        {
+            "name": "Измерение частоты: ros2 topic hz /turtle1/cmd_vel показывает ~10 Hz",
+            "status": "passed"
+        }
+    ],
+    "defect": {
+        "reproducer": "Запуск ноды без remap: ros2 run patrol patrol. В терминале выполняем ros2 topic info /turtle1/cmd_vel --verbose и видим Publisher count: 0, Subscription count: 1. Черепаха в окне turtlesim стоит на месте, хотя нода /patrol опубликует сообщения в топик /cmd_vel (относительное имя).",
+        "root_cause": "Издатель в ноде создан с относительным именем 'cmd_vel', что приводит к публикации в топик /cmd_vel (или с namespace ноды). Turtlesim подписан на полное имя /turtle1/cmd_vel. Тип сообщения (geometry_msgs/msg/Twist) совпадает, но полное имя топика разное. В ROS 2 коммуникация происходит только при совпадении имени топика и типа сообщения. Без remap издатель попадает в другую 'комнату', где подписчиков нет.",
+        "proof_after": "Запуск с remap: ros2 run patrol patrol --ros-args -r cmd_vel:=/turtle1/cmd_vel. Теперь ros2 topic info /turtle1/cmd_vel --verbose показывает Publisher count: 1, Node name: patrol. ros2 topic hz /turtle1/cmd_vel выдаёт average rate: 10.000. Черепаха в окне turtlesim начинает двигаться по кругу."
+    },
+    "claims": {
+        "public_tests_passed": true,
+        "defect_reproduced": true,
+        "defect_fixed": true
+    },
+    "time": {
+        "contact_academic_hours": 2,
+        "self_study_hours": 2
+    },
+    "ai_used": true
 }
