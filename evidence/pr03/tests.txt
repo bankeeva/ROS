@@ -1,0 +1,38 @@
+=== Pytest output ===
+src/patrol/test/test_command.py::test_no_pose_gives_zero_command PASSED  [ 33%]
+src/patrol/test/test_command.py::test_with_pose_gives_nonzero_command PASSED [ 66%]
+src/patrol/test/test_command.py::test_command_sign_and_units_preserved PASSED [100%]
+
+3 passed in 0.22s
+
+=== ros2 topic hz /turtle1/cmd_vel (10 seconds) ===
+average rate: 10.020
+	min: 0.099s max: 0.101s std dev: 0.00077s window: 9
+average rate: 10.006
+	min: 0.096s max: 0.103s std dev: 0.00139s window: 19
+average rate: 10.008
+	min: 0.088s max: 0.111s std dev: 0.00344s window: 29
+average rate: 10.003
+	min: 0.088s max: 0.111s std dev: 0.00309s window: 39
+average rate: 10.005
+	min: 0.088s max: 0.111s std dev: 0.00287s window: 49
+average rate: 10.001
+	min: 0.088s max: 0.111s std dev: 0.00267s window: 59
+average rate: 10.001
+	min: 0.088s max: 0.111s std dev: 0.00252s window: 69
+average rate: 10.002
+	min: 0.088s max: 0.111s std dev: 0.00241s window: 79
+average rate: 10.002
+	min: 0.088s max: 0.111s std dev: 0.00238s window: 89
+average rate: 10.000
+	min: 0.088s max: 0.111s std dev: 0.00230s window: 99
+average rate: 10.001
+	min: 0.088s max: 0.111s std dev: 0.00224s window: 109
+average rate: 10.000
+	min: 0.088s max: 0.111s std dev: 0.00217s window: 119
+average rate: 10.000
+	min: 0.088s max: 0.111s std dev: 0.00212s window: 129
+average rate: 10.000
+	min: 0.088s max: 0.111s std dev: 0.00208s window: 139
+average rate: 10.000
+	min: 0.088s max: 0.111s std dev: 0.00205s window: 149

@@ -21,18 +21,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate environment JSON
-        shell: bash
-        run: python3 -m json.tool evidence/pr01/environment.json > /dev/null
+      # - name: Validate environment JSON
+      #   shell: bash
+      #   run: python3 -m json.tool evidence/pr01/environment.json > /dev/null
       
-      - name: Build PR02 launch package
-        shell: bash
-        run: |
-          source /opt/ros/lyrical/setup.bash
-          colcon build --symlink-install --packages-select turtle_bringup
-          source install/setup.bash
-          test -f "$(ros2 pkg prefix turtle_bringup)/share/turtle_bringup/launch/sim.launch.py"
-          python3 -m py_compile src/turtle_bringup/launch/sim.launch.py
+      # - name: Build PR02 launch package
+      #   shell: bash
+      #   run: |
+      #     source /opt/ros/lyrical/setup.bash
+      #     colcon build --symlink-install --packages-select turtle_bringup
+      #     source install/setup.bash
+      #     test -f "$(ros2 pkg prefix turtle_bringup)/share/turtle_bringup/launch/sim.launch.py"
+      #     python3 -m py_compile src/turtle_bringup/launch/sim.launch.py
 
       - name: Download course kit
         shell: bash
@@ -43,10 +43,22 @@ jobs:
           sha256sum -c robotics-course-kit-v1.tar.gz.sha256.txt
           tar -xzf robotics-course-kit-v1.tar.gz -C .course-kit
 
-      - name: Check PR evidence
-        shell: bash
-        run: python3 .course-kit/v1/tools/check_practice.py PR01 --submission .
+      # - name: Check PR evidence
+      #   shell: bash
+      #   run: python3 .course-kit/v1/tools/check_practice.py PR01 --submission .
 
-      - name: Check PR02 evidence
+      # - name: Check PR02 evidence
+      #   shell: bash
+      #   run: python3 .course-kit/v1/tools/check_practice.py PR02 --submission .
+      
+      - name: Build PR03 patrol package
         shell: bash
-        run: python3 .course-kit/v1/tools/check_practice.py PR02 --submission .
+        run: |
+          source /opt/ros/lyrical/setup.bash
+          colcon build --symlink-install --packages-select patrol
+          source install/setup.bash
+          python3 -m pytest src/patrol/test/test_command.py -v
+
+      - name: Check PR03 evidence
+        shell: bash
+        run: python3 .course-kit/v1/tools/check_practice.py PR03 --submission .

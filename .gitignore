@@ -24,3 +24,5 @@ robotics-course-kit-v1.tar.gz.sha256.txt
 build/
 install/
 log/
+__pycache__/
+*.pyc
