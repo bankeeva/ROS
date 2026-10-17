@@ -1,0 +1,47 @@
+=== Дефект: проверка publish_hz отключена ===
+Терминал 1:
+ubuntu@ecd68245700d:~$ ros2 run patrol patrol
+[INFO] [1792254709.207033712] [patrol]: Patrol started: speed=0.5, turn=0.3, hz=10.0
+Traceback (most recent call last):
+  File "/home/ubuntu/install/patrol/lib/patrol/patrol", line 33, in <module>
+    sys.exit(load_entry_point('patrol==0.0.0', 'console_scripts', 'patrol')())
+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/ubuntu/install/patrol/lib/python3.14/site-packages/patrol/patrol.py", line 101, in main
+    rclpy.spin(node)
+    ~~~~~~~~~~^^^^^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+    executor.spin_once()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1033, in spin_once
+    self._spin_once_impl(timeout_sec)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1025, in _spin_once_impl
+    raise exception
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/task.py", line 351, in _execute_coroutine_step
+    result = coro.send(None)
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 683, in handler
+    await call_coroutine()
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 617, in _execute
+    response = await await_or_execute(srv.callback, request, srv.srv_type.Response())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 139, in await_or_execute
+    return callback(*args)
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/parameter_service.py", line 142, in _set_parameters_callback
+    result = node.set_parameters_atomically([param])
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/node.py", line 820, in set_parameters_atomically
+    return self._set_parameters_atomically(parameter_list)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/node.py", line 840, in _set_parameters_atomically
+    return self._set_parameters_atomically_common(parameter_list)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/node.py", line 890, in _set_parameters_atomically_common
+    result = callback(parameter_list)
+  File "/home/ubuntu/install/patrol/lib/python3.14/site-packages/patrol/patrol.py", line 88, in _on_parameter_change
+    period = 1.0 / self.publish_hz
+             ~~~~^~~~~~~~~~~~~~~~~
+ZeroDivisionError: division by zero
+[ros2run]: Process exited with failure 1
+
+
+Терминал 2:
+ubuntu@ecd68245700d:~$ ros2 param set /patrol publish_hz 0.0

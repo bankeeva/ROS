@@ -70,10 +70,10 @@ class PatrolNode(Node):
                 if math.isnan(p.value):
                     return SetParametersResult(
                         successful=False, reason='NaN is not allowed')
-                # if not (1.0 <= p.value <= 30.0):
-                #     return SetParametersResult(
-                #         successful=False,
-                #         reason='publish_hz must be in [1, 30]')
+                if not (1.0 <= p.value <= 30.0):
+                    return SetParametersResult(
+                        successful=False,
+                        reason='publish_hz must be in [1, 30]')
 
         for p in params:
             if p.name == 'linear_speed':
