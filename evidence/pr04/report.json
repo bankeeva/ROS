@@ -1,0 +1,88 @@
+{
+    "schema_version": 1,
+    "practice_id": "PR04",
+    "commit": "384ee18a963328243081141c416689d4496e1739",
+    "course_kit": {
+        "version": "v1-w06",
+        "archive_sha256": "5d210c431e32418f45e2cffa9dd2028116c7a9520a36f3c7079c778cd73437a8"
+    },
+    "commands": [
+        "source /opt/ros/lyrical/setup.bash",
+        "cd \"$(git rev-parse --show-toplevel)\"",
+        "mkdir -p src evidence/pr04",
+        "colcon build --symlink-install --packages-select patrol",
+        "source install/setup.bash",
+        "ros2 run turtlesim turtlesim_node",
+        "ros2 run patrol patrol",
+        "ros2 param list /patrol",
+        "ros2 param set /patrol publish_hz 5.0",
+        "ros2 param set /patrol publish_hz 0.0",
+        "ros2 param set /patrol publish_hz -5.0",
+        "ros2 param set /patrol publish_hz 50.0",
+        "ros2 topic hz /turtle1/cmd_vel",
+        "ros2 service call /clear std_srvs/srv/Empty",
+        "ros2 action list -t",
+        "python3 -m pytest src/patrol/test -v"
+    ],
+    "tests": [
+        {
+            "name": "Сборка пакета: colcon build завершается успешно",
+            "status": "passed"
+        },
+        {
+            "name": "Тесты pytest: test_hz_normal_change, test_hz_zero_rejected, test_hz_negative_rejected, test_hz_nan_rejected, test_hz_upper_bound, test_speed_normal, test_speed_zero, test_speed_over_one, test_turn_normal, test_turn_negative, test_turn_over_one проходят",
+            "status": "passed"
+        },
+        {
+            "name": "Запуск ноды: ros2 run patrol patrol регистрирует ноду /patrol в графе и печатает 'Patrol started: speed=0.5, turn=0.3, hz=10.0'",
+            "status": "passed"
+        },
+        {
+            "name": "Параметры объявлены: ros2 param list /patrol показывает linear_speed, turn_rate, publish_hz",
+            "status": "passed"
+        },
+        {
+            "name": "Допустимое значение: ros2 param set /patrol publish_hz 5.0 возвращает 'Set parameter successful', таймер пересоздан с периодом 0.2 с",
+            "status": "passed"
+        },
+        {
+            "name": "Отклонение нуля: ros2 param set /patrol publish_hz 0.0 возвращает 'Setting parameter failed: publish_hz must be in [1, 30]', нода продолжает работать со старой частотой",
+            "status": "passed"
+        },
+        {
+            "name": "Отклонение отрицательного значения: ros2 param set /patrol publish_hz -5.0 возвращает 'Setting parameter failed: publish_hz must be in [1, 30]'",
+            "status": "passed"
+        },
+        {
+            "name": "Отклонение превышения верхней границы: ros2 param set /patrol publish_hz 50.0 возвращает 'Setting parameter failed: publish_hz must be in [1, 30]'",
+            "status": "passed"
+        },
+        {
+            "name": "Измерение частоты: после установки publish_hz=5.0 команда ros2 topic hz /turtle1/cmd_vel показывает average rate ≈ 5.0 Hz",
+            "status": "passed"
+        },
+        {
+            "name": "Вызов сервиса: ros2 service call /clear std_srvs/srv/Empty возвращает std_srvs.srv.Empty_Response()",
+            "status": "passed"
+        },
+        {
+            "name": "Список действий: ros2 action list -t показывает /turtle1/rotate_absolute [turtlesim_msgs/action/RotateAbsolute]",
+            "status": "passed"
+        }
+    ],
+    "defect": {
+        "reproducer": "В ветке pr04-defect закомментированы две строки валидации publish_hz в callback _on_parameter_change. Нода пересобирается и запускается: ros2 run patrol patrol. В другом терминале выполняется ros2 param set /patrol publish_hz 0.0. Клиент получает 'Set parameter successful', но нода в терминале 1 падает с исключением ZeroDivisionError: division by zero на строке period = 1.0 / self.publish_hz.",
+        "root_cause": "Без проверки диапазона значение 0.0 проходит через callback и записывается в self.publish_hz. В следующей строке вычисляется period = 1.0 / 0.0, что вызывает ZeroDivisionError и аварийно завершает ноду. Активное состояние (подписка, издатель, таймер) разрушено — нода перестаёт публиковать команды, старый таймер уже не работает, а новый не создан.",
+        "proof_after": "Проверка диапазона возвращена в callback: if not (1.0 <= p.value <= 30.0): return SetParametersResult(successful=False, reason='publish_hz must be in [1, 30]'). После пересборки и запуска ros2 run patrol patrol команда ros2 param set /patrol publish_hz 0.0 возвращает 'Setting parameter failed: publish_hz must be in [1, 30]'. Нода продолжает работать, старый таймер не остановлен, старая частота (10.0 Hz) сохранена — ros2 topic hz /turtle1/cmd_vel по-прежнему показывает ≈ 10 Hz. Допустимое значение ros2 param set /patrol publish_hz 5.0 принимается, таймер пересоздаётся с периодом 0.2 с, частота потока становится ≈ 5 Hz."
+    },
+    "claims": {
+        "public_tests_passed": true,
+        "defect_reproduced": true,
+        "defect_fixed": true
+    },
+    "time": {
+        "contact_academic_hours": 2,
+        "self_study_hours": 2
+    },
+    "ai_used": true
+}

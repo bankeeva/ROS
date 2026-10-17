@@ -1,0 +1,28 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.4, pytest-9.0.2, pluggy-1.6.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/ubuntu/src/patrol
+plugins: ament_flake8-0.20.6, ament_pep257-0.20.6, ament_mypy-0.20.6, launch_testing_ros-0.29.9, ament_copyright-0.20.6, launch_testing-3.9.8, ament_lint-0.20.6, ament_xmllint-0.20.6, typeguard-4.4.4, colcon-core-0.21.3, cov-5.0.0
+collected 19 items                                                             
+
+test/test_command.py::test_no_pose_gives_zero_command PASSED             [  5%]
+test/test_command.py::test_with_pose_gives_nonzero_command PASSED        [ 10%]
+test/test_command.py::test_command_sign_and_units_preserved PASSED       [ 15%]
+test/test_copyright.py::test_copyright SKIPPED (No copyright header ...) [ 21%]
+test/test_flake8.py::test_flake8 PASSED                                  [ 26%]
+test/test_mypy.py::test_mypy PASSED                                      [ 31%]
+test/test_parameters.py::test_hz_normal_change PASSED                    [ 36%]
+test/test_parameters.py::test_hz_zero_rejected PASSED                    [ 42%]
+test/test_parameters.py::test_hz_negative_rejected PASSED                [ 47%]
+test/test_parameters.py::test_hz_nan_rejected PASSED                     [ 52%]
+test/test_parameters.py::test_hz_upper_bound PASSED                      [ 57%]
+test/test_parameters.py::test_speed_normal PASSED                        [ 63%]
+test/test_parameters.py::test_speed_zero PASSED                          [ 68%]
+test/test_parameters.py::test_speed_over_one PASSED                      [ 73%]
+test/test_parameters.py::test_turn_normal PASSED                         [ 78%]
+test/test_parameters.py::test_turn_negative PASSED                       [ 84%]
+test/test_parameters.py::test_turn_over_one PASSED                       [ 89%]
+test/test_pep257.py::test_pep257 PASSED                                  [ 94%]
+test/test_xmllint.py::test_xmllint PASSED                                [100%]
+
+======================== 18 passed, 1 skipped in 5.67s =========================
