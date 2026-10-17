@@ -13,11 +13,12 @@
 # limitations under the License.
 
 from ament_mypy.main import main
+
 import pytest
 
 
 @pytest.mark.mypy
 @pytest.mark.linter
 def test_mypy() -> None:
-    rc = main(argv=[])
+    rc = main(argv=['--exclude', 'build', '--exclude', 'install'])
     assert rc == 0, 'Found type errors!'

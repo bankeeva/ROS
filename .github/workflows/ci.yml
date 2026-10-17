@@ -51,14 +51,28 @@ jobs:
       #   shell: bash
       #   run: python3 .course-kit/v1/tools/check_practice.py PR02 --submission .
       
-      - name: Build PR03 patrol package
+      # - name: Build PR03 patrol package
+      #   shell: bash
+      #   run: |
+      #     source /opt/ros/lyrical/setup.bash
+      #     colcon build --symlink-install --packages-select patrol
+      #     source install/setup.bash
+      #     python3 -m pytest src/patrol/test/test_command.py -v
+
+      # - name: Check PR03 evidence
+      #   shell: bash
+      #   run: python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
+
+      - name: Build and Test PR04 patrol package
         shell: bash
         run: |
           source /opt/ros/lyrical/setup.bash
-          colcon build --symlink-install --packages-select patrol
+          rm -rf build install log
+          colcon build --symlink-install --packages-select patrol turtle_bringup
           source install/setup.bash
-          python3 -m pytest src/patrol/test/test_command.py -v
+          cd src/patrol
+          python3 -m pytest test -v
 
-      - name: Check PR03 evidence
+      - name: Check PR04 evidence
         shell: bash
-        run: python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
+        run: python3 .course-kit/v1/tools/check_practice.py PR04 --submission .
