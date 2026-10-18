@@ -63,16 +63,32 @@ jobs:
       #   shell: bash
       #   run: python3 .course-kit/v1/tools/check_practice.py PR03 --submission .
 
-      - name: Build and Test PR04 patrol package
+      # - name: Build and Test PR04 patrol package
+      #   shell: bash
+      #   run: |
+      #     source /opt/ros/lyrical/setup.bash
+      #     rm -rf build install log
+      #     colcon build --symlink-install --packages-select patrol turtle_bringup
+      #     source install/setup.bash
+      #     cd src/patrol
+      #     python3 -m pytest test -v
+
+      # - name: Check PR04 evidence
+      #   shell: bash
+      #   run: python3 .course-kit/v1/tools/check_practice.py PR04 --submission .
+ 
+      - name: Build and Test PR05 course_bringup package
         shell: bash
         run: |
           source /opt/ros/lyrical/setup.bash
-          rm -rf build install log
-          colcon build --symlink-install --packages-select patrol turtle_bringup
+          colcon build --symlink-install --packages-select course_bringup
           source install/setup.bash
-          cd src/patrol
-          python3 -m pytest test -v
+          test -f "$(ros2 pkg prefix course_bringup)/share/course_bringup/launch/patrol.launch.py"
+          test -f "$(ros2 pkg prefix course_bringup)/share/course_bringup/config/qos-overrides.yaml"
+          test -x "$(ros2 pkg prefix course_bringup)/lib/course_bringup/pose_relay.py"
+          python3 -m py_compile src/course_bringup/launch/patrol.launch.py
+          python3 -m py_compile src/course_bringup/course_bringup/pose_relay.py
 
-      - name: Check PR04 evidence
+      - name: Check PR05 evidence
         shell: bash
-        run: python3 .course-kit/v1/tools/check_practice.py PR04 --submission .
+        run: python3 .course-kit/v1/tools/check_practice.py PR05 --submission .
