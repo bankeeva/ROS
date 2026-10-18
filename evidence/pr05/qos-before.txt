@@ -1,0 +1,10 @@
+=== PR05 defect: reliable subscriber vs best_effort publisher ===
+=== live stream: /robot_a/sensor_pose ===
+
+--- ros2 topic echo --qos-reliability reliable (expected: timeout + WARN) ---
+[WARN] [_ros2cli]: New publisher discovered on topic '/robot_a/sensor_pose', offering incompatible QoS. No messages will be received from it. Last incompatible policy: RELIABILITY
+live-before exit=124
+
+--- replay: ros2 topic echo --qos-reliability reliable (expected: timeout + WARN) ---
+[WARN] [_ros2cli]: New publisher discovered on topic '/robot_a/sensor_pose', offering incompatible QoS. No messages will be received from it. Last incompatible policy: RELIABILITY
+replay-before exit=124

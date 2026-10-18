@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR05",
+  "commit": "bb29796dcddec3610fe53f4ffb1da2a1f9b635ab",
+  "course_kit": {
+    "version": "v1-w06",
+    "archive_sha256": "5d210c431e32418f45e2cffa9dd2028116c7a9520a36f3c7079c778cd73437a8"
+  },
+  "commands": [
+    "source /opt/ros/lyrical/setup.bash",
+    "cd \"$(git rev-parse --show-toplevel)\"",
+    "colcon build --packages-select course_bringup patrol",
+    "source install/setup.bash",
+    "ros2 launch course_bringup patrol.launch.py namespace:=robot_a subscriber_reliability:=reliable record:=false",
+    "ros2 node list",
+    "ros2 topic list",
+    "ros2 topic info -v /robot_a/sensor_pose",
+    "timeout 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability reliable --once",
+    "timeout 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability best_effort --once",
+    "ros2 bag record -s mcap -o evidence/pr05/bag --topics /robot_a/sensor_pose",
+    "ros2 bag info evidence/pr05/bag",
+    "ros2 bag play evidence/pr05/bag --qos-profile-overrides-path src/course_bringup/config/qos-overrides.yaml --rate 0.2 --loop",
+    "timeout 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability reliable --once",
+    "timeout 3s ros2 topic echo /robot_a/sensor_pose --qos-reliability best_effort --once",
+    "cp evidence/pr05/bag/metadata.yaml evidence/pr05/bag-metadata.yaml",
+    "python3 .course-kit/v1/tools/check_practice.py PR05 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "Сборка: colcon build --packages-select course_bringup завершается успешно",
+      "status": "passed"
+    },
+    {
+      "name": "Нода pose_relay устанавливается в lib/course_bringup и запускается через ros2 run (shebang python3 присутствует, ошибки Exec format error нет)",
+      "status": "passed"
+    },
+    {
+      "name": "Launch-файл принимает аргументы namespace, record, bag_dir, subscriber_reliability; при record:=false recorder не запускается (IfCondition)",
+      "status": "passed"
+    },
+    {
+      "name": "Изоляция в namespace: ros2 node list показывает /robot_a/pose_relay, ros2 topic list показывает /robot_a/sensor_pose при глобальном /turtle1/pose",
+      "status": "passed"
+    },
+    {
+      "name": "Совместимый подписчик: ros2 topic echo /robot_a/sensor_pose --qos-reliability best_effort --once получает Pose, exit=0",
+      "status": "passed"
+    },
+    {
+      "name": "Несовместимый подписчик (дефект): ros2 topic echo --qos-reliability reliable --once получает WARN incompatible QoS RELIABILITY и завершается по timeout, exit=124; топик при этом виден в ros2 topic list",
+      "status": "passed"
+    },
+    {
+      "name": "Запись MCAP: ros2 bag record -s mcap создаёт evidence/pr05/bag с одним топиком /robot_a/sensor_pose, 1232 сообщения, duration ~19.7 s, storage mcap",
+      "status": "passed"
+    },
+    {
+      "name": "Replay до фикса: ros2 bag play с qos-overrides.yaml (best_effort) и reliable-echo даёт WARN RELIABILITY_QOS_POLICY и timeout, exit=124",
+      "status": "passed"
+    },
+    {
+      "name": "Replay после фикса: тот же bag и override, best_effort-echo получает Pose, exit=0",
+      "status": "passed"
+    },
+    {
+      "name": "Артефакты: evidence/pr05/{qos-before.txt,qos-after.txt,bag-metadata.yaml} присутствуют; bag-metadata.yaml — копия bag/metadata.yaml",
+      "status": "passed"
+    }
+  ],
+  "defect": {
+    "reproducer": "pose_relay публикует /robot_a/sensor_pose с QoS best_effort (ReliabilityPolicy.BEST_EFFORT, HistoryPolicy.KEEP_LAST, depth=10, DurabilityPolicy.VOLATILE). Подписчик запускается с несовместимым профилем: ros2 topic echo /robot_a/sensor_pose --qos-reliability reliable --once. Топик виден в ros2 topic list и ros2 topic info -v показывает Publisher count: 1, offered QoS Reliability: BEST_EFFORT. Однако сообщения не приходят: echo печатает WARN 'New publisher discovered ... offering incompatible QoS. No messages will be received from it. Last incompatible policy: RELIABILITY' и завершается по timeout с кодом 124. Диагностика сохранена в evidence/pr05/qos-before.txt.",
+    "root_cause": "Reliability — ключевая политика QoS, определяющая совместимость издателя и подписчика. Издатель BEST_EFFORT не даёт гарантий доставки и не может обслужить подписчика RELIABLE, который требует гарантированной доставки. RMW отклоняет установление связи: топик discoverable (имена и типы совпадают), но data-flow не устанавливается, потому что запрашиваемая политика (RELIABLE) строже предлагаемой (BEST_EFFORT). Итог: топик виден, сообщений нет — классический сценарий несовместимого QoS.",
+    "proof_after": "Совместимость восстановлена двумя способами: (1) на живом потоке — подписчик переключён на --qos-reliability best_effort, echo получает Pose, exit=0; (2) на повторе записи — bag проигрывается с config/qos-overrides.yaml, который задаёт для /robot_a/sensor_pose reliability: best_effort, history: keep_last, depth: 10; reliable-echo на replay снова получает WARN RELIABILITY_QOS_POLICY и timeout (exit=124), а best_effort-echo получает Pose (exit=0). Один и тот же набор входных сообщений (bag с 1232 сообщениями) используется для обоих прогонов, что доказывает: причина — именно QoS, а не отсутствие данных. Результаты в evidence/pr05/qos-before.txt и qos-after.txt; ros2 bag info подтверждает один поток /robot_a/sensor_pose, storage mcap, Count: 1232."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true,
+    "replay_verified": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2
+  },
+  "ai_used": true
+}

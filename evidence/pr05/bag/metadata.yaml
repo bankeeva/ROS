@@ -1,0 +1,44 @@
+rosbag2_bagfile_information:
+  version: 9
+  storage_identifier: mcap
+  duration:
+    nanoseconds: 19694755453
+  starting_time:
+    nanoseconds_since_epoch: 1792311317824683756
+  message_count: 1232
+  topics_with_message_count:
+    - topic_metadata:
+        name: /robot_a/sensor_pose
+        type: turtlesim_msgs/msg/Pose
+        serialization_format: cdr
+        offered_qos_profiles:
+          - history: keep_last
+            depth: 10
+            reliability: best_effort
+            durability: volatile
+            deadline:
+              sec: 9223372036
+              nsec: 854775807
+            lifespan:
+              sec: 9223372036
+              nsec: 854775807
+            liveliness: automatic
+            liveliness_lease_duration:
+              sec: 9223372036
+              nsec: 854775807
+            avoid_ros_namespace_conventions: false
+        type_description_hash: RIHS01_37b07ace09a0ed2c5b774b1410dec972dfd1d292de5656ebc2b075ac646e09c8
+      message_count: 1232
+  compression_format: ""
+  compression_mode: ""
+  relative_file_paths:
+    - 0_bag_2026_10_18-08_15_17.mcap
+  files:
+    - path: 0_bag_2026_10_18-08_15_17.mcap
+      starting_time:
+        nanoseconds_since_epoch: 1792311317824683756
+      duration:
+        nanoseconds: 19694755453
+      message_count: 1232
+  custom_data: ~
+  ros_distro: lyrical

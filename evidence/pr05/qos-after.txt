@@ -1,0 +1,36 @@
+=== PR05 fix: best_effort subscriber receives sensor_pose ===
+=== live stream: /robot_a/sensor_pose ===
+
+--- ros2 topic echo --qos-reliability best_effort ---
+x: 5.544444561004639
+y: 5.544444561004639
+theta: 0.0
+linear_velocity: 0.0
+angular_velocity: 0.0
+---
+live-after exit=0
+
+--- replay: ros2 topic echo --qos-reliability best_effort ---
+x: 5.544444561004639
+y: 5.544444561004639
+theta: 0.0
+linear_velocity: 0.0
+angular_velocity: 0.0
+---
+replay-after exit=0
+
+===== ros2 bag info =====
+
+Files:             0_bag_2026_10_18-08_15_17.mcap
+Bag size:          90.2 KiB
+Storage id:        mcap
+ROS Distro:        lyrical
+Duration:          19.694755453s
+Start:             Oct 18 2026 08:15:17.824683756 (1792311317.824683756)
+End:               Oct 18 2026 08:15:37.519439209 (1792311337.519439209)
+Messages:          1232
+Topic information: Topic: /robot_a/sensor_pose | Type: turtlesim_msgs/msg/Pose | Count: 1232 | Serialization Format: cdr
+Services:          0
+Service information: 
+Actions:           0
+Action information: 
