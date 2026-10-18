@@ -1,0 +1,92 @@
+{
+    "schema_version": 1,
+    "practice_id": "PR06",
+    "commit": "bbab2df3585dfa415baf871c89718e8b5b42726e",
+    "course_kit": {
+        "version": "v1-w06",
+        "archive_sha256": "5d210c431e32418f45e2cffa9dd2028116c7a9520a36f3c7079c778cd73437a8"
+    },
+    "commands": [
+        "source /opt/ros/lyrical/setup.bash",
+        "cd \"$(git rev-parse --show-toplevel)\"",
+        "colcon build --packages-select course_description",
+        "source install/setup.bash",
+        "xacro src/course_description/urdf/vehicle.urdf.xacro > /tmp/vehicle.urdf",
+        "check_urdf /tmp/vehicle.urdf",
+        "colcon test --packages-select course_description",
+        "colcon test-result --verbose",
+        "ros2 launch course_description display.launch.py",
+        "ros2 topic info /tf_static --verbose",
+        "timeout 4 ros2 topic echo /tf_static --once --qos-durability transient_local --qos-reliability reliable",
+        "timeout 4 ros2 topic echo /tf_static --once --qos-durability volatile --qos-reliability reliable",
+        "ros2 run tf2_ros tf2_echo base_link lidar_link",
+        "ros2 run tf2_tools view_frames",
+        "git checkout pr06-break-lidar-parent",
+        "colcon test --packages-select course_description",
+        "ros2 run tf2_ros tf2_echo base_link lidar_link",
+        "git checkout main",
+        "colcon test --packages-select course_description",
+        "python3 .course-kit/v1/tools/check_practice.py PR06 --submission ."
+    ],
+    "tests": [
+        {
+            "name": "Сборка: colcon build --packages-select course_description завершается успешно",
+            "status": "passed"
+        },
+        {
+            "name": "Xacro разворачивается в URDF, check_urdf парсит дерево без ошибок (robot name is: course_ackermann)",
+            "status": "passed"
+        },
+        {
+            "name": "Параметризация: base_length, base_width, base_height, track, wheel_radius вынесены в xacro-переменные, магических чисел в геометрии нет",
+            "status": "passed"
+        },
+        {
+            "name": "Единицы СИ и REP-103: размеры в метрах, массы в килограммах, оси X вперёд, Y влево, Z вверх; тензоры инерции физически допустимы",
+            "status": "passed"
+        },
+        {
+            "name": "Связное дерево tf2: base_link — корень, camera_link, lidar_link, imu_link присоединены fixed-joint'ами к base_link; колёса — continuous",
+            "status": "passed"
+        },
+        {
+            "name": "robot_state_publisher публикует /tf_static с QoS RELIABLE + TRANSIENT_LOCAL (ros2 topic info /tf_static --verbose)",
+            "status": "passed"
+        },
+        {
+            "name": "Поздний подписчик с transient_local получает преобразования (exit=0), подписчик с volatile — не получает (exit=124); разница сохранена в evidence/pr06/tf-qos.txt",
+            "status": "passed"
+        },
+        {
+            "name": "tf2_echo base_link lidar_link на main показывает Translation [0.000, 0.000, 0.200] — совпадает с lidar_xyz",
+            "status": "passed"
+        },
+        {
+            "name": "Дефект: на ветке pr06-break-lidar-parent parent у lidar_joint = camera_link, тест test_lidar_parent_is_base_link падает, tf2_echo показывает [0.200, 0.000, 0.300]",
+            "status": "passed"
+        },
+        {
+            "name": "Исправление: на main parent у lidar_joint = base_link, все 5 pytest-тестов зелёные, tf2_echo снова [0.000, 0.000, 0.200]",
+            "status": "passed"
+        },
+        {
+            "name": "Артефакты: evidence/pr06/{frames.md,model-check.txt,tf-qos.txt,report.json} присутствуют; frames.md фиксирует parent/child/offset/владельца для каждой связи",
+            "status": "passed"
+        }
+    ],
+    "defect": {
+        "reproducer": "На отдельной ветке pr06-break-lidar-parent в src/course_description/urdf/vehicle.urdf.xacro у joint lidar_joint изменён parent: base_link заменён на camera_link при сохранении прежнего offset lidar_xyz = (0.0, 0.0, 0.20). После colcon build --packages-select course_description и colcon test тест test_lidar_parent_is_base_link падает с AssertionError: assert 'camera_link' == 'base_link' (1 failed, 4 passed). ros2 run tf2_ros tf2_echo base_link lidar_link показывает Translation [0.200, 0.000, 0.300] — сумму camera_xyz и lidar_xyz, то есть лидар смещён вперёд на 0.2 м и вверх на 0.1 м относительно правильного положения. При этом check_urdf по-прежнему успешно парсит дерево: структурная корректность не доказывает геометрию.",
+        "root_cause": "Преобразование base_link → lidar_link в дереве tf2 вычисляется как композиция преобразований вдоль пути. При parent=camera_link путь становится base_link → camera_link → lidar_link, и итоговый offset равен сумме camera_xyz + lidar_xyz = (0.20, 0.0, 0.30) вместо заданного lidar_xyz = (0.0, 0.0, 0.20). URDF при этом остаётся синтаксически валидным: check_urdf проверяет только связность и ацикличность, но не семантику parent-child. Ошибка обнаруживается только структурным тестом ожидаемого parent и численной проверкой через tf2_echo.",
+        "proof_after": "Связь исправлена: на main parent у lidar_joint снова base_link, offset lidar_xyz сохранён. Повторный colcon test --packages-select course_description даёт 5 passed, 0 failed; test_lidar_parent_is_base_link зелёный. ros2 run tf2_ros tf2_echo base_link lidar_link показывает Translation [0.000, 0.000, 0.200], что совпадает с xacro-параметром lidar_xyz. evidence/pr06/frames.md фиксирует для lidar_joint Parent=base_link, Child=lidar_link, offset xyz=(0.0, 0.0, 0.20), владелец публикации — robot_state_publisher через /tf_static. Ветка pr06-break-lidar-parent сохранена как доказательство defect_reproduced; main — как доказательство defect_fixed. Дополнительно tf-qos.txt показывает, что /tf_static публикуется с RELIABLE + TRANSIENT_LOCAL: поздний transient_local-подписчик получает преобразования (exit=0), volatile — нет (exit=124), что согласуется со статической природой fixed joints."
+    },
+    "claims": {
+        "public_tests_passed": true,
+        "defect_reproduced": true,
+        "defect_fixed": true
+    },
+    "time": {
+        "contact_academic_hours": 2,
+        "self_study_hours": 2
+    },
+    "ai_used": true
+}
