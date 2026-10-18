@@ -77,18 +77,38 @@ jobs:
       #   shell: bash
       #   run: python3 .course-kit/v1/tools/check_practice.py PR04 --submission .
  
-      - name: Build and Test PR05 course_bringup package
+      # - name: Build and Test PR05 course_bringup package
+      #   shell: bash
+      #   run: |
+      #     source /opt/ros/lyrical/setup.bash
+      #     colcon build --symlink-install --packages-select course_bringup
+      #     source install/setup.bash
+      #     test -f "$(ros2 pkg prefix course_bringup)/share/course_bringup/launch/patrol.launch.py"
+      #     test -f "$(ros2 pkg prefix course_bringup)/share/course_bringup/config/qos-overrides.yaml"
+      #     test -x "$(ros2 pkg prefix course_bringup)/lib/course_bringup/pose_relay.py"
+      #     python3 -m py_compile src/course_bringup/launch/patrol.launch.py
+      #     python3 -m py_compile src/course_bringup/course_bringup/pose_relay.py
+
+      # - name: Check PR05 evidence
+      #   shell: bash
+      #   run: python3 .course-kit/v1/tools/check_practice.py PR05 --submission .
+
+      - name: Build and Test PR06 course_description package
         shell: bash
         run: |
           source /opt/ros/lyrical/setup.bash
-          colcon build --symlink-install --packages-select course_bringup
+          colcon build --symlink-install --packages-select course_description
           source install/setup.bash
-          test -f "$(ros2 pkg prefix course_bringup)/share/course_bringup/launch/patrol.launch.py"
-          test -f "$(ros2 pkg prefix course_bringup)/share/course_bringup/config/qos-overrides.yaml"
-          test -x "$(ros2 pkg prefix course_bringup)/lib/course_bringup/pose_relay.py"
-          python3 -m py_compile src/course_bringup/launch/patrol.launch.py
-          python3 -m py_compile src/course_bringup/course_bringup/pose_relay.py
+          test -f "$(ros2 pkg prefix course_description)/share/course_description/urdf/vehicle.urdf.xacro"
+          test -f "$(ros2 pkg prefix course_description)/share/course_description/launch/display.launch.py"
+          test -f "$(ros2 pkg prefix course_description)/share/course_description/rviz/view.rviz"
+          python3 -m py_compile src/course_description/launch/display.launch.py
+          python3 -m py_compile src/course_description/test/test_description.py
+          xacro "$(ros2 pkg prefix course_description)/share/course_description/urdf/vehicle.urdf.xacro" > /tmp/vehicle.urdf
+          check_urdf /tmp/vehicle.urdf
+          colcon test --packages-select course_description --event-handlers console_direct+
+          colcon test-result --verbose
 
-      - name: Check PR05 evidence
+      - name: Check PR06 evidence
         shell: bash
-        run: python3 .course-kit/v1/tools/check_practice.py PR05 --submission .
+        run: python3 .course-kit/v1/tools/check_practice.py PR06 --submission .
