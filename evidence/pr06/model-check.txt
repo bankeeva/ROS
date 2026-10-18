@@ -1,0 +1,15 @@
+robot name is: course_ackermann
+---------- Successfully Parsed XML ---------------
+root Link: base_link has 7 child(ren)
+    child(1):  camera_link
+    child(2):  front_left_wheel_link
+    child(3):  front_right_wheel_link
+    child(4):  imu_link
+    child(5):  lidar_link
+    child(6):  rear_left_wheel_link
+    child(7):  rear_right_wheel_link
+Starting >>> course_description
+Finished <<< course_description [0.70s]
+
+Summary: 1 package finished [0.89s]
+Summary: 6 tests, 0 errors, 0 failures, 0 skipped

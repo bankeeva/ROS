@@ -1,0 +1,105 @@
+## topic info /tf_static
+Type: tf2_msgs/msg/TFMessage
+
+Publisher count: 1
+
+Node name: robot_state_publisher
+Node namespace: /
+Topic type: tf2_msgs/msg/TFMessage
+Topic type hash: RIHS01_e369d0f05a23ae52508854b66f6aa0437f3449d652e8cbf22d5abe85d020f087
+Endpoint type: PUBLISHER
+GID: 01.0f.eb.7d.1d.08.69.37.00.00.00.00.00.00.16.03
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: TRANSIENT_LOCAL
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+Subscription count: 1
+
+Node name: transform_listener_impl_aaab009ee4b0
+Node namespace: /
+Topic type: tf2_msgs/msg/TFMessage
+Topic type hash: RIHS01_e369d0f05a23ae52508854b66f6aa0437f3449d652e8cbf22d5abe85d020f087
+Endpoint type: SUBSCRIPTION
+GID: 01.0f.eb.7d.1e.08.c7.ab.00.00.00.00.00.00.17.04
+QoS profile:
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (100)
+  Durability: TRANSIENT_LOCAL
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+## echo transient_local
+transforms:
+- header:
+    stamp:
+      sec: 1792317882
+      nanosec: 235410172
+    frame_id: base_link
+  child_frame_id: camera_link
+  transform:
+    translation:
+      x: 0.2
+      y: 0.0
+      z: 0.1
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1792317882
+      nanosec: 235410172
+    frame_id: base_link
+  child_frame_id: imu_link
+  transform:
+    translation:
+      x: -0.1
+      y: 0.0
+      z: 0.0
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- header:
+    stamp:
+      sec: 1792317882
+      nanosec: 235410172
+    frame_id: base_link
+  child_frame_id: lidar_link
+  transform:
+    translation:
+      x: 0.0
+      y: 0.0
+      z: 0.2
+    rotation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+---
+exit=0
+## echo volatile
+exit=124
+
+## Объяснение
+
+/tf_static использует профиль RELIABLE + TRANSIENT_LOCAL, потому что
+фиксированные преобразования публикуются один раз и должны быть доступны
+поздним подписчикам: издатель хранит последнее сообщение и отдаёт его
+новому подписчику с совместимым QoS (transient_local). Подписчик с volatile
+прошлое не получает — это видно по exit=124 во втором echo.
+
+/tf использует профиль RELIABLE + VOLATILE, потому что подвижные
+преобразования и одометрия постоянно обновляются: доставлять старое
+состояние нет смысла, подписчику важно только актуальное. Такое разделение
+согласуется с тем, как меняются данные: fixed joints статичны, а
+wheel/odom меняются непрерывно.
