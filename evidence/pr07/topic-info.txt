@@ -1,0 +1,126 @@
+# PR07 QoS and endpoint profiles (2026-11-01T09:51:15+00:00)
+
+===== /clock
+Type: rosgraph_msgs/msg/Clock
+Publisher count: 1
+Node name: ros_gz_bridge
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+Subscription count: 4
+Node name: robot_state_publisher
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+Node name: ackermann_adapter
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+Node name: odom_adapter
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+Node name: test_drive_source
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+
+===== /vehicle/camera/image_raw
+Type: sensor_msgs/msg/Image
+Publisher count: 1
+Node name: ros_gz_bridge
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (5)
+  Durability: VOLATILE
+Subscription count: 0
+
+===== /vehicle/scan
+Type: sensor_msgs/msg/LaserScan
+Publisher count: 1
+Node name: ros_gz_bridge
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (5)
+  Durability: VOLATILE
+Subscription count: 0
+
+===== /vehicle/imu
+Type: sensor_msgs/msg/Imu
+Publisher count: 1
+Node name: ros_gz_bridge
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (5)
+  Durability: VOLATILE
+Subscription count: 0
+
+===== /vehicle/odom_gz
+Type: nav_msgs/msg/Odometry
+Publisher count: 1
+Node name: ros_gz_bridge
+Node namespace: /
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: TRANSIENT_LOCAL
+Subscription count: 1
+Node name: odom_adapter
+Node namespace: /
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+
+===== /vehicle/odom
+Type: nav_msgs/msg/Odometry
+Publisher count: 1
+Node name: odom_adapter
+Node namespace: /
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+Subscription count: 0
+
+===== /vehicle/gz_cmd_vel
+Type: geometry_msgs/msg/Twist
+Publisher count: 1
+Node name: ackermann_adapter
+Node namespace: /
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+  Durability: VOLATILE
+Subscription count: 1
+Node name: ros_gz_bridge
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (1)
+  Durability: VOLATILE
+
+===== /tf
+Type: tf2_msgs/msg/TFMessage
+Publisher count: 2
+Node name: robot_state_publisher
+Node namespace: /
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (100)
+  Durability: VOLATILE
+Node name: odom_adapter
+Node namespace: /
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (100)
+  Durability: VOLATILE
+Subscription count: 0
+
+===== /tf_static
+Type: tf2_msgs/msg/TFMessage
+Publisher count: 1
+Node name: robot_state_publisher
+Node namespace: /
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (1)
+  Durability: TRANSIENT_LOCAL
+Subscription count: 0

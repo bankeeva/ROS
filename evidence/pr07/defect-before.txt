@@ -1,0 +1,99 @@
+# PR07 defect reproduction: bridge-broken.yaml (IMU direction inverted + gz topic typo)
+# 2026-11-01T09:55:46+00:00
+$ ros2 launch course_simulation simulation.launch.py bridge_config:=$PWD/src/course_simulation/config/bridge-broken.yaml headless:=true
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-01-09-55-46-410928-ac34dc8fca40-9343
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [launch.user]: PR07 gz server command: gz sim -s -r --headless-rendering /home/ubuntu/src/course_simulation/worlds/mcity-minimal.sdf
+[INFO] [launch.user]: PR07 bridge config: /home/ubuntu/src/course_simulation/config/bridge-broken.yaml
+[INFO] [launch.user]: PR07 namespace: <root>
+[INFO] [gz_sim_server-1]: process started with pid [9355]
+[INFO] [robot_state_publisher-2]: process started with pid [9356]
+[INFO] [parameter_bridge-3]: process started with pid [9357]
+[INFO] [ackermann_adapter.py-4]: process started with pid [9359]
+[INFO] [odom_adapter.py-5]: process started with pid [9360]
+[INFO] [test_drive_source.py-6]: process started with pid [9361]
+[robot_state_publisher-2] [WARN] [1793526946.580388841] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1793526946.580652549] [robot_state_publisher]: Robot initialized
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="camera_link"]/sensor[@name="front_camera"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L88]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="lidar_link"]/sensor[@name="lidar"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L102]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="imu_link"]/sensor[@name="imu"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L112]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[test_drive_source.py-6] [INFO] [1793526946.966038924] [test_drive_source]: test_drive_source: mode=fixed on /drive/safe at 10.0 Hz with simulation stamps (stand-in for the PR11 supervisor)
+[test_drive_source.py-6] [INFO] [1793526946.966825966] [test_drive_source]: fixed command: speed=0.15 m/s steering=0.00 rad
+[ackermann_adapter.py-4] [INFO] [1793526947.000633549] [ackermann_adapter]: ackermann_adapter: /drive/safe -> /vehicle/gz_cmd_vel; wheel_base=0.80 m, v<=1.20 m/s, |delta|<=0.45 rad, timeout=0.25 s
+[odom_adapter.py-5] [INFO] [1793526947.085287466] [odom_adapter]: odom_adapter: /vehicle/odom_gz (course_ackermann/odom, course_ackermann/base_link) -> /vehicle/odom (odom, base_link), single owner of dynamic tf odom->base_link
+[parameter_bridge-3] [INFO] [1793526947.627580758] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/vehicle/gz_cmd_vel (geometry_msgs/msg/Twist) -> /model/course_ackermann/cmd_vel (gz.msgs.Twist)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526947.637030716] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/course_ackermann/odometry (gz.msgs.Odometry) -> /vehicle/odom_gz (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526947.642617716] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/vehicle/scan (gz.msgs.LaserScan) -> /vehicle/scan (sensor_msgs/msg/LaserScan)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526947.645674383] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/vehicle/imu (sensor_msgs/msg/Imu) -> /vehicle/imu_raw (gz.msgs.IMU)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526947.647181300] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/vehicle/camera/image_raw (gz.msgs.Image) -> /vehicle/camera/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526947.648443925] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="camera_link"]/sensor[@name="front_camera"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L88]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="lidar_link"]/sensor[@name="lidar"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L102]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="imu_link"]/sensor[@name="imu"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L112]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[parameter_bridge-3] [INFO] [1793526949.628502634] [ros_gz_bridge]: Passing message from ROS geometry_msgs/msg/Twist to Gazebo gz.msgs.Twist (showing msg only once per type)
+
+## A. the broken IMU entry in the bridge YAML
+- ros_topic_name: /vehicle/imu
+  gz_topic_name: /vehicle/imu_raw
+  ros_type_name: sensor_msgs/msg/Imu
+  gz_type_name: gz.msgs.IMU
+  direction: ROS_TO_GZ
+  qos_profile: SENSOR_DATA
+
+## B. ROS side: /vehicle/imu has no publisher
+Type: sensor_msgs/msg/Imu
+
+Publisher count: 0
+
+Subscription count: 1
+
+Node name: ros_gz_bridge
+Node namespace: /
+Topic type: sensor_msgs/msg/Imu
+Topic type hash: RIHS01_7d9a00ff131080897a5ec7e26e315954b8eae3353c3f995c55faf71574000b5b
+Endpoint type: SUBSCRIPTION
+GID: 01.0f.eb.7d.8d.24.5c.9a.00.00.00.00.00.00.16.04
+QoS profile:
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (5)
+  Durability: VOLATILE
+  Lifespan: Infinite
+  Deadline: Infinite
+  Liveliness: AUTOMATIC
+  Liveliness lease duration: Infinite
+
+
+## C. time-limited ROS read receives nothing
+exit=124
+
+## D. Gazebo still publishes /vehicle/imu
+Publishers [Address, Message Type]:
+  tcp://172.17.0.2:42011, gz.msgs.IMU
+No subscribers on topic [/vehicle/imu]
+
+header {
+  stamp {
+    sec: 35
+    nsec: 300000000
+  }
+  data {
+    key: "frame_id"
+    value: "imu_link"
+  }
+  data {
+
+## E. the typo topic /vehicle/imu_raw has no Gazebo publisher
+Publishers [Address, Message Type]:
+  tcp://172.17.0.2:36737, gz.msgs.IMU
+No subscribers on topic [/vehicle/imu_raw]
+
+## F. the command path is unaffected by the IMU defect
+linear:
+  x: 0.15000000596046448
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---

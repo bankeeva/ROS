@@ -1,0 +1,182 @@
+{
+  "practice_id": "PR07",
+  "captured_at": "2026-11-01T09:51:30+00:00",
+  "environment": {
+    "host": "Docker VNC container ghcr.io/tiryoh/ros2-desktop-vnc:lyrical (arm64)",
+    "os": "Ubuntu 26.04 (resolute)",
+    "ros_distro": "lyrical",
+    "gazebo": "Gazebo Sim 10.5.0 (Jetty)",
+    "renderer": "OGRE2 with --headless-rendering (no X server for the server process; software GL in the container)",
+    "course_kit_version": "v1-w08",
+    "course_kit_archive_sha256": "aea8efd0a51668af63f2e475b82bfa28bd76c21f20d8afea6b136d43a56a88fb",
+    "workspace": "/home/ubuntu (bind mount of the repository root)"
+  },
+  "clock": {
+    "topic": "/clock",
+    "type": "rosgraph_msgs/msg/Clock",
+    "source": "Gazebo /clock through ros_gz_bridge",
+    "use_sim_time": true,
+    "qos": {
+      "reliability": "BEST_EFFORT",
+      "history": "KEEP_LAST",
+      "depth": 1,
+      "durability": "VOLATILE",
+      "profile": "CLOCK"
+    },
+    "measured_rate_hz": 1000.0,
+    "measured_rate_note": "bag-info: 44568 /clock messages over 44.577 s of simulation time = 999.8 Hz"
+  },
+  "time_base": {
+    "stamp_source": "simulation time (/clock, use_sim_time=true) for every sensor, odometry and tf message",
+    "measurement_window_wall_s": 30.0,
+    "measurement_window_sim_s": 24.127,
+    "real_time_factor": 0.804,
+    "bag_wall_s": 60.355,
+    "bag_sim_s": 44.577,
+    "bag_real_time_factor": 0.738,
+    "note": "Gazebo runs slower than real time on the software renderer; ros2 topic hz without --wall-time uses the header stamps and therefore reports simulation-time rates, while --wall-time reports host-time rates."
+  },
+  "sensors": [
+    {
+      "name": "camera",
+      "sdf_sensor": "front_camera",
+      "topic": "/vehicle/camera/image_raw",
+      "type": "sensor_msgs/msg/Image",
+      "frame_id": "camera_link",
+      "gazebo_frame_id": "camera_link",
+      "stamp_source": "simulation (/clock, use_sim_time=true)",
+      "declared_rate_hz": 10.0,
+      "declared_rate_note": "SDF update_rate. The course kit ships 20 Hz; PR07 changed exactly this one sensor parameter to 10 Hz to reduce render load.",
+      "measured_rate_hz": 4.5,
+      "measured_rate_bag_hz": 4.46,
+      "measured_wall_rate_hz": 3.63,
+      "measured_note": "Renderer-bound. Every camera frame is rendered by OGRE2 in software; the sensor cannot reach its 10 Hz update_rate, the observed gap between frames is 0.1-0.8 s of simulation time. 199 frames over 44.577 s in the bag = 4.46 Hz.",
+      "qos": {
+        "reliability": "BEST_EFFORT",
+        "history": "KEEP_LAST",
+        "depth": 5,
+        "durability": "VOLATILE",
+        "profile": "SENSOR_DATA"
+      }
+    },
+    {
+      "name": "lidar",
+      "sdf_sensor": "lidar",
+      "topic": "/vehicle/scan",
+      "type": "sensor_msgs/msg/LaserScan",
+      "frame_id": "lidar_link",
+      "gazebo_frame_id": "lidar_link",
+      "stamp_source": "simulation (/clock, use_sim_time=true)",
+      "declared_rate_hz": 10.0,
+      "measured_rate_hz": 10.0,
+      "measured_rate_bag_hz": 10.0,
+      "measured_wall_rate_hz": 8.07,
+      "measured_note": "Matches update_rate in simulation time: 242 samples in 24.1 s of simulation and 446 samples in 44.577 s in the bag. Wall rate is 10 x RTF.",
+      "qos": {
+        "reliability": "BEST_EFFORT",
+        "history": "KEEP_LAST",
+        "depth": 5,
+        "durability": "VOLATILE",
+        "profile": "SENSOR_DATA"
+      }
+    },
+    {
+      "name": "imu",
+      "sdf_sensor": "imu",
+      "topic": "/vehicle/imu",
+      "type": "sensor_msgs/msg/Imu",
+      "frame_id": "imu_link",
+      "gazebo_frame_id": "imu_link",
+      "stamp_source": "simulation (/clock, use_sim_time=true)",
+      "declared_rate_hz": 100.0,
+      "measured_rate_hz": 100.0,
+      "measured_rate_bag_hz": 99.9,
+      "measured_wall_rate_hz": 80.43,
+      "measured_note": "Matches update_rate exactly in simulation time (2413 messages in 24.12 s, 4453 in 44.577 s). After the defect was fixed the IMU is again bridged GZ->ROS (defect-after.txt).",
+      "qos": {
+        "reliability": "BEST_EFFORT",
+        "history": "KEEP_LAST",
+        "depth": 5,
+        "durability": "VOLATILE",
+        "profile": "SENSOR_DATA"
+      }
+    }
+  ],
+  "odometry": {
+    "raw": {
+      "topic": "/vehicle/odom_gz",
+      "type": "nav_msgs/msg/Odometry",
+      "publisher": "ros_gz_bridge from Gazebo /model/course_ackermann/odometry",
+      "frame_id": "course_ackermann/odom",
+      "child_frame_id": "course_ackermann/base_link",
+      "qos": {
+        "reliability": "RELIABLE",
+        "history": "KEEP_LAST",
+        "depth": 1,
+        "durability": "TRANSIENT_LOCAL"
+      }
+    },
+    "normalized": {
+      "topic": "/vehicle/odom",
+      "type": "nav_msgs/msg/Odometry",
+      "publisher": "course_simulation/odom_adapter.py (the only publisher)",
+      "frame_id": "odom",
+      "child_frame_id": "base_link",
+      "qos": {
+        "reliability": "RELIABLE",
+        "history": "KEEP_LAST",
+        "depth": 10,
+        "durability": "VOLATILE"
+      }
+    },
+    "declared_rate_hz": 50.0,
+    "measured_rate_hz": 50.0,
+    "measured_rate_bag_hz": 49.96,
+    "measured_wall_rate_hz": 40.23,
+    "measured_note": "AckermannSteering odom_publish_frequency=50; 1207 messages in 24.12 s and 2227 in 44.577 s. The adapter preserves the message rate, it does not resample.",
+    "tf": {
+      "transform": "odom -> base_link",
+      "topic": "/tf",
+      "type": "tf2_msgs/msg/TFMessage",
+      "owner": "course_simulation/odom_adapter.py",
+      "stamp": "identical to the /vehicle/odom header stamp of the same message",
+      "qos": {
+        "reliability": "RELIABLE",
+        "history": "KEEP_LAST",
+        "depth": 100,
+        "durability": "VOLATILE"
+      },
+      "bag_note": "bag-info: 2228 /tf messages vs 2227 /vehicle/odom messages, so the adapter wrote exactly one transform per odometry sample"
+    },
+    "static_tf_owner": {
+      "topic": "/tf_static",
+      "owner": "robot_state_publisher from the PR06 course_description/urdf/vehicle.urdf.xacro",
+      "qos": {
+        "reliability": "RELIABLE",
+        "history": "KEEP_LAST",
+        "depth": 1,
+        "durability": "TRANSIENT_LOCAL"
+      },
+      "bag_note": "one transient-local /tf_static message is present in the bag"
+    }
+  },
+  "frames": {
+    "tree": ["odom", "base_link", "camera_link", "lidar_link", "imu_link"],
+    "edges": [
+      {"parent": "odom", "child": "base_link", "type": "dynamic", "owner": "odom_adapter.py"},
+      {"parent": "base_link", "child": "camera_link", "type": "static", "owner": "robot_state_publisher"},
+      {"parent": "base_link", "child": "lidar_link", "type": "static", "owner": "robot_state_publisher"},
+      {"parent": "base_link", "child": "imu_link", "type": "static", "owner": "robot_state_publisher"}
+    ],
+    "note": "Static offsets come from the PR06 URDF, which is the frame contract of the project. The course SDF places the sensors at its own offsets (0.28, 0, 0.38); PR07 verifies frame connectivity and ownership, not the metric agreement between the URDF and the SDF."
+  },
+  "measurement": {
+    "primary": "evidence/pr07/measurements.json (30 s wall window; simulation and wall rate per topic, RTF=0.804)",
+    "cross_check": "evidence/pr07/rates.txt (ros2 topic hz, simulation time and --wall-time, earlier window)",
+    "bag": "evidence/pr07/bag-info.txt (required recording: 44.577 s, seven topics, 138.6 MiB MCAP)",
+    "raw_odometry_frames_fixed_in_report": [
+      "course_ackermann/odom",
+      "course_ackermann/base_link"
+    ]
+  }
+}

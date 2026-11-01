@@ -1,0 +1,152 @@
+# PR07 frequency measurements (2026-11-01T09:32:16+00:00)
+# default ros2 topic hz uses message stamps (simulation time); --wall-time uses host time.
+
+===== /vehicle/scan : simulation-time rate (default) =====
+WARNING: topic [/vehicle/scan] does not appear to be published yet
+average rate: 8.503
+	min: 0.102s max: 0.134s std dev: 0.01028s window: 7
+average rate: 7.960
+	min: 0.102s max: 0.165s std dev: 0.01589s window: 15
+average rate: 8.098
+	min: 0.104s max: 0.165s std dev: 0.01516s window: 20
+average rate: 8.293
+	min: 0.104s max: 0.165s std dev: 0.01316s window: 20
+average rate: 8.239
+	min: 0.106s max: 0.164s std dev: 0.01276s window: 20
+average rate: 8.013
+	min: 0.106s max: 0.185s std dev: 0.01932s window: 20
+average rate: 8.223
+	min: 0.106s max: 0.185s std dev: 0.01826s window: 20
+average rate: 7.938
+	min: 0.108s max: 0.201s std dev: 0.02427s window: 20
+average rate: 8.001
+	min: 0.108s max: 0.201s std dev: 0.02335s window: 20
+average rate: 7.527
+	min: 0.103s max: 0.201s std dev: 0.02906s window: 20
+average rate: 6.994
+	min: 0.103s max: 0.409s std dev: 0.06454s window: 20
+===== /vehicle/scan : wall-time rate (--wall-time) =====
+average rate: 8.179
+	min: 0.109s max: 0.149s std dev: 0.01264s window: 6
+average rate: 7.638
+	min: 0.104s max: 0.235s std dev: 0.03186s window: 14
+average rate: 7.074
+	min: 0.104s max: 0.235s std dev: 0.03453s window: 20
+average rate: 6.028
+	min: 0.104s max: 0.544s std dev: 0.09412s window: 20
+average rate: 5.522
+	min: 0.104s max: 0.544s std dev: 0.09913s window: 20
+average rate: 5.298
+	min: 0.097s max: 0.544s std dev: 0.11202s window: 20
+average rate: 5.592
+	min: 0.097s max: 0.544s std dev: 0.11549s window: 20
+average rate: 7.349
+	min: 0.097s max: 0.411s std dev: 0.06542s window: 20
+
+===== /vehicle/imu : simulation-time rate (default) =====
+WARNING: topic [/vehicle/imu] does not appear to be published yet
+average rate: 84.728
+	min: 0.009s max: 0.026s std dev: 0.00438s window: 20
+average rate: 65.261
+	min: 0.008s max: 0.035s std dev: 0.00681s window: 20
+average rate: 84.183
+	min: 0.008s max: 0.024s std dev: 0.00433s window: 20
+average rate: 86.154
+	min: 0.009s max: 0.026s std dev: 0.00474s window: 20
+average rate: 68.460
+	min: 0.008s max: 0.036s std dev: 0.00772s window: 20
+average rate: 77.402
+	min: 0.009s max: 0.044s std dev: 0.00817s window: 20
+average rate: 85.845
+	min: 0.009s max: 0.022s std dev: 0.00362s window: 20
+average rate: 71.141
+	min: 0.009s max: 0.045s std dev: 0.00996s window: 20
+average rate: 87.395
+	min: 0.009s max: 0.026s std dev: 0.00421s window: 20
+average rate: 87.631
+	min: 0.009s max: 0.024s std dev: 0.00352s window: 20
+===== /vehicle/imu : wall-time rate (--wall-time) =====
+WARNING: topic [/vehicle/imu] does not appear to be published yet
+average rate: 87.667
+	min: 0.009s max: 0.024s std dev: 0.00380s window: 20
+average rate: 84.125
+	min: 0.009s max: 0.028s std dev: 0.00476s window: 20
+average rate: 82.827
+	min: 0.009s max: 0.031s std dev: 0.00469s window: 20
+average rate: 61.220
+	min: 0.009s max: 0.063s std dev: 0.01528s window: 20
+average rate: 82.571
+	min: 0.009s max: 0.030s std dev: 0.00436s window: 20
+average rate: 78.061
+	min: 0.008s max: 0.035s std dev: 0.00672s window: 20
+
+===== /vehicle/odom : simulation-time rate (default) =====
+average rate: 36.335
+	min: 0.015s max: 0.077s std dev: 0.01454s window: 20
+average rate: 32.645
+	min: 0.020s max: 0.116s std dev: 0.02238s window: 20
+average rate: 36.303
+	min: 0.019s max: 0.074s std dev: 0.01212s window: 20
+average rate: 43.354
+	min: 0.018s max: 0.037s std dev: 0.00560s window: 20
+average rate: 22.976
+	min: 0.018s max: 0.172s std dev: 0.03667s window: 20
+average rate: 12.295
+	min: 0.019s max: 0.307s std dev: 0.07134s window: 20
+average rate: 37.663
+	min: 0.016s max: 0.069s std dev: 0.01233s window: 20
+average rate: 40.438
+	min: 0.017s max: 0.053s std dev: 0.00921s window: 20
+average rate: 21.662
+	min: 0.018s max: 0.274s std dev: 0.05685s window: 20
+average rate: 25.288
+	min: 0.019s max: 0.172s std dev: 0.04408s window: 20
+average rate: 27.937
+	min: 0.018s max: 0.111s std dev: 0.02254s window: 20
+average rate: 41.025
+	min: 0.018s max: 0.048s std dev: 0.00791s window: 20
+===== /vehicle/odom : wall-time rate (--wall-time) =====
+average rate: 42.723
+	min: 0.018s max: 0.041s std dev: 0.00663s window: 20
+average rate: 43.490
+	min: 0.019s max: 0.037s std dev: 0.00600s window: 20
+average rate: 33.989
+	min: 0.019s max: 0.081s std dev: 0.01475s window: 20
+average rate: 31.252
+	min: 0.018s max: 0.084s std dev: 0.01791s window: 20
+average rate: 37.289
+	min: 0.019s max: 0.057s std dev: 0.01032s window: 20
+average rate: 26.054
+	min: 0.010s max: 0.231s std dev: 0.04635s window: 20
+average rate: 40.732
+	min: 0.018s max: 0.063s std dev: 0.00972s window: 20
+average rate: 39.477
+	min: 0.017s max: 0.074s std dev: 0.01254s window: 20
+
+===== /vehicle/camera/image_raw : simulation-time rate (default) =====
+average rate: 7.139
+	min: 0.140s max: 0.140s std dev: 0.00000s window: 1
+average rate: 1.859
+	min: 0.140s max: 0.936s std dev: 0.39792s window: 2
+average rate: 1.653
+	min: 0.140s max: 0.936s std dev: 0.29025s window: 4
+average rate: 0.785
+	min: 0.140s max: 3.945s std dev: 1.36110s window: 5
+average rate: 0.956
+	min: 0.140s max: 3.945s std dev: 1.20903s window: 7
+average rate: 0.891
+	min: 0.140s max: 3.945s std dev: 1.14836s window: 8
+average rate: 0.942
+	min: 0.140s max: 3.945s std dev: 1.04508s window: 11
+failed to initialize wait set: the given context is not valid, either rcl_init() was not called or rcl_shutdown() was called., at ./src/rcl/wait.c:110
+===== /vehicle/camera/image_raw : wall-time rate (--wall-time) =====
+average rate: 3.830
+	min: 0.261s max: 0.261s std dev: 0.00000s window: 1
+average rate: 1.154
+	min: 0.114s max: 2.556s std dev: 0.98739s window: 4
+average rate: 1.359
+	min: 0.114s max: 2.556s std dev: 0.83447s window: 6
+average rate: 1.463
+	min: 0.114s max: 2.556s std dev: 0.72917s window: 8
+average rate: 1.364
+	min: 0.114s max: 2.556s std dev: 0.70171s window: 9

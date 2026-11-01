@@ -1,0 +1,68 @@
+# PR07 watchdog and turning proof (2026-11-01T09:54:34+00:00)
+
+## 1. stream of /vehicle/gz_cmd_vel: fresh 0.15 m/s commands, then one explicit zero after the source stops
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+linear:
+  x: 0.15000000596046448
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+linear:
+  x: 0.15000000596046448
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+linear:
+  x: 0.15000000596046448
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+
+## 2. turning command: /drive/safe speed=0.25 steering=0.3
+  steering_angle: 0.30000001192092896
+  steering_angle_velocity: 0.0
+  speed: 0.25
+
+## 3. adapter output: angular.z = 0.25 * tan(0.3) / 0.8 = 0.09667 rad/s
+linear:
+  x: 0.25
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.09666758208476654
+---
+
+## 4. the same Twist inside Gazebo
+linear {
+  x: 0.25
+}
+angular {
+  z: 0.096667582084766543
+}
+

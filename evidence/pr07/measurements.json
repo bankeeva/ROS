@@ -1,0 +1,51 @@
+{
+  "rtf": 0.804,
+  "topics": {
+    "/vehicle/camera/image_raw": {
+      "count": 109,
+      "expected_frame": "camera_link",
+      "frame_id": "camera_link",
+      "sim_gap_max_s": 0.8,
+      "sim_gap_min_s": 0.1,
+      "sim_rate_hz": 4.5,
+      "sim_span_s": 24.0,
+      "type": "sensor_msgs/msg/Image",
+      "wall_rate_hz": 3.63
+    },
+    "/vehicle/imu": {
+      "count": 2413,
+      "expected_frame": "imu_link",
+      "frame_id": "imu_link",
+      "sim_gap_max_s": 0.01,
+      "sim_gap_min_s": 0.01,
+      "sim_rate_hz": 100.0,
+      "sim_span_s": 24.12,
+      "type": "sensor_msgs/msg/Imu",
+      "wall_rate_hz": 80.43
+    },
+    "/vehicle/odom": {
+      "count": 1207,
+      "expected_frame": "odom",
+      "frame_id": "odom",
+      "sim_gap_max_s": 0.02,
+      "sim_gap_min_s": 0.02,
+      "sim_rate_hz": 50.0,
+      "sim_span_s": 24.12,
+      "type": "nav_msgs/msg/Odometry",
+      "wall_rate_hz": 40.23
+    },
+    "/vehicle/scan": {
+      "count": 242,
+      "expected_frame": "lidar_link",
+      "frame_id": "lidar_link",
+      "sim_gap_max_s": 0.1,
+      "sim_gap_min_s": 0.1,
+      "sim_rate_hz": 10.0,
+      "sim_span_s": 24.1,
+      "type": "sensor_msgs/msg/LaserScan",
+      "wall_rate_hz": 8.07
+    }
+  },
+  "window_sim_s": 24.127,
+  "window_wall_s": 30.0
+}

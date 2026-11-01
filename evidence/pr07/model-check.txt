@@ -1,0 +1,18 @@
+# PR07 model and environment checks (2026-11-01T09:59:03+00:00)
+
+## ros2 pkg prefix
+ackermann_msgs: /opt/ros/lyrical
+ros_gz_bridge:  /opt/ros/lyrical
+course_simulation: /home/ubuntu/install/course_simulation
+
+## python type support
+Ackermann type support loads
+
+## gz sdf -k (relative model:// may not resolve without GZ_SIM_RESOURCE_PATH)
+[1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="camera_link"]/sensor[@name="front_camera"]/gz_frame_id:/home/ubuntu/src/course_simulation/models/course_ackermann/model.sdf:L88]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="lidar_link"]/sensor[@name="lidar"]/gz_frame_id:/home/ubuntu/src/course_simulation/models/course_ackermann/model.sdf:L102]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="imu_link"]/sensor[@name="imu"]/gz_frame_id:/home/ubuntu/src/course_simulation/models/course_ackermann/model.sdf:L112]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="camera_link"]/sensor[@name="front_camera"]/gz_frame_id:/home/ubuntu/src/course_simulation/models/course_ackermann/model.sdf:L88]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="lidar_link"]/sensor[@name="lidar"]/gz_frame_id:/home/ubuntu/src/course_simulation/models/course_ackermann/model.sdf:L102]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="imu_link"]/sensor[@name="imu"]/gz_frame_id:/home/ubuntu/src/course_simulation/models/course_ackermann/model.sdf:L112]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+Valid.

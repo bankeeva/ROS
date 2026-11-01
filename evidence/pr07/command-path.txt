@@ -1,0 +1,100 @@
+# PR07 command path proof (2026-11-01T09:49:28+00:00)
+# single bridge: /drive/safe -> ackermann_adapter -> /vehicle/gz_cmd_vel -> Gazebo -> odometry
+
+## 1. ROS /drive/safe (test source, reliable)
+header:
+  stamp:
+    sec: 10
+    nanosec: 700000000
+  frame_id: base_link
+drive:
+  steering_angle: 0.0
+  steering_angle_velocity: 0.0
+  speed: 0.15000000596046448
+  acceleration: 0.0
+  jerk: 0.0
+---
+
+## 2. ROS /vehicle/gz_cmd_vel (ackermann adapter output)
+linear:
+  x: 0.15000000596046448
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+
+## 3. Gazebo /model/course_ackermann/cmd_vel (same values after the bridge)
+linear {
+  x: 0.15000000596046448
+}
+angular {
+}
+
+
+## 4. raw odometry /vehicle/odom_gz (frames before normalisation)
+stamp:
+  sec: 13
+  nanosec: 665000000
+frame_id: course_ackermann/odom
+---
+
+## 5. normalised /vehicle/odom (frames after the adapter)
+stamp:
+  sec: 15
+  nanosec: 145000000
+frame_id: odom
+---
+
+## 6. /vehicle/odom pose at t1
+x: 2.3927250946533407
+y: 2.570880298069135e-09
+z: 0.0
+---
+## 7. /vehicle/odom pose at t2 (15 s wall later)
+x: 3.730725147690497
+y: 6.4934195452227445e-09
+z: 0.0
+---
+
+## 8. tf2 odom -> base_link (owner: odom_adapter.py)
+At time 30.545000000
+- Translation: [4.544, 0.000, 0.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+At time 31.65000000
+- Translation: [4.622, 0.000, 0.000]
+- Rotation: in RPY (radian) [0.000, -0.000, 0.000]
+- Rotation: in RPY (degree) [0.000, -0.000, 0.000]
+At time 31.505000000
+
+## 9. Gazebo dynamic pose of the model (independent of ROS odometry)
+  name: "course_ackermann"
+  id: 49
+  position {
+    x: 5.1500778112068231
+    y: 1.4055200812436432e-08
+    z: 0.11999999582729423
+  }
+  orientation {
+
+## 10. participants of the command topic (ROS side)
+Type: geometry_msgs/msg/Twist
+Publisher count: 1
+Node name: ackermann_adapter
+Node namespace: /
+  Reliability: RELIABLE
+  History (Depth): KEEP_LAST (10)
+Subscription count: 1
+Node name: ros_gz_bridge
+Node namespace: /
+  Reliability: BEST_EFFORT
+  History (Depth): KEEP_LAST (1)
+
+## 11. participants of the command topic (Gazebo side)
+Publishers [Address, Message Type]:
+  tcp://172.17.0.2:37659, gz.msgs.Twist
+Subscribers [Address, Message Type]:
+  tcp://172.17.0.2:44527, gz.msgs.Twist

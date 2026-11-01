@@ -1,0 +1,66 @@
+# PR07 simulation clock and wheel/steering runtime proof (2026-11-01T10:13:44+00:00)
+# launch: test_mode:=fixed test_speed:=0.3 test_steering:=0.3 (headless)
+
+## 1. ros2 topic echo /clock --once (simulation time, not host time)
+clock:
+  sec: 4
+  nanosec: 165000000
+---
+
+## 2. front_left_wheel / front_left_knuckle at t1
+  name: "front_left_wheel"
+  id: 55
+  position {
+    x: 0.39999999999999991
+    y: 0.30999999999999972
+    z: -1.3877787807814457e-17
+  }
+  orientation {
+    x: -0.084575358844550669
+    y: 0.70203074815168343
+    z: -0.69097335851896846
+    w: 0.15018540256269927
+  }
+--
+  name: "front_left_knuckle"
+  id: 53
+  position {
+    x: 0.39999999999999969
+    y: 0.31000000000000016
+  }
+  orientation {
+    x: -1.33335499891396e-26
+    y: -1.4205104695534702e-26
+    z: 0.16644663033964002
+    w: 0.98605046485896419
+  }
+}
+
+## 3. same links 6 s wall later (wheel orientation changes = rolling; knuckle yaw stays = steering)
+  name: "front_left_wheel"
+  id: 55
+  position {
+    x: 0.39999999999999991
+    y: 0.31000000000000005
+    z: -5.5511151231257827e-17
+  }
+  orientation {
+    x: 0.33520852691977787
+    y: 0.62260363248469119
+    z: -0.47644476054439705
+    w: 0.52249435446417269
+  }
+--
+  name: "front_left_knuckle"
+  id: 53
+  position {
+    x: 0.39999999999999947
+    y: 0.31000000000000005
+    z: -4.163336342344337e-17
+  }
+  orientation {
+    x: 1.4474347378097196e-24
+    y: 4.76882221650219e-25
+    z: 0.16801220644220358
+    w: 0.98578491492131415
+  }

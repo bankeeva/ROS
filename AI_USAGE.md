@@ -50,3 +50,12 @@
 | DeepSeek | Веб-интерфейс чата | Разработка URDF/Xacro и Launch | Подсказки по синтаксису макросов, формулам инерции и настройке RViz | Самостоятельное написание `vehicle.urdf.xacro`, проверка через `check_urdf` и ручной запуск в RViz |
 | DeepSeek | Веб-интерфейс чата | Анализ QoS, тесты и дефекты | Разбор флагов QoS, структура pytest и объяснение ограничений `check_urdf` | Самостоятельная запись `tf-qos.txt`, ручное воспроизведение дефекта и его фикс на `main` |
 | DeepSeek | Веб-интерфейс чата | Оформление отчёта | Структурирование `report.json` и `frames.md` на основе моих данных | Ручная сверка полей отчёта с выводом терминала и самостоятельный запуск `check_practice.py` |
+
+## PR07
+
+**ai_used:** true
+
+| Модель | Инструмент / среда | Компонент | Характер помощи | Как проверено |
+|---|---|---|---|---|
+| DeepSeek | Веб-интерфейс чата | Код и launch | Подсказки по `ackermann_adapter.py`, `odom_adapter.py`, `kinematics.py`, `simulation.launch.py`, `bridge.yaml`, `CMakeLists.txt`/`package.xml`, разбор ошибок `ament_python_install_package` и `warn`/`warning` | Самостоятельная правка файлов, `colcon build`, `colcon test`, живой `ros2 topic echo` и `tf2_echo` |
+| DeepSeek | Веб-интерфейс чата | Диагностика и обучение | Разбор связки Gazebo/ros_gz, контракта Ackermann→Twist, QoS-профилей `SENSOR_DATA`/`CLOCK`, `--use-sim-time`, RTF и причин дефекта моста (`direction`, опечатка в `gz_topic_name`) | Самостоятельное воспроизведение дефекта через `bridge-broken.yaml`, `ros2 topic info -v`, `gz topic -e`, фикс одной конфигурацией, запись `fixtures/pr07-sensors` и запуск `measure_rates.py` |

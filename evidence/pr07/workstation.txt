@@ -1,0 +1,41 @@
+
+== Система ==
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+VERSION_CODENAME=resolute
+архитектура=aarch64
+ядро=6.12.69-linuxkit
+назначенная оболочка=/bin/bash
+текущая оболочка=bash
+
+== Инструменты ==
+GNU bash, version 5.3.9(1)-release (aarch64-unknown-linux-gnu)
+Copyright (C) 2025 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+git version 2.53.0
+[не найдено] fish
+[не найдено] uv
+[не найдено] code
+[не найдено] docker
+
+== ROS 2 ==
+ROS_DISTRO=lyrical
+ROS_DOMAIN_ID=<не задано>
+ros2=/opt/ros/lyrical/bin/ros2
+/opt/ros/lyrical
+
+== Графические адаптеры и драйверы ==
+lspci: Unable to load libkmod resources: error -2
+
+== OpenGL renderer ==
+direct rendering: Yes
+OpenGL vendor string: Mesa
+OpenGL renderer string: llvmpipe (LLVM 21.1.8, 128 bits)
+OpenGL version string: 4.5 (Compatibility Profile) Mesa 26.0.8-1ubuntu0.3
+
+== Vulkan ==
+[не найдено] vulkaninfo; установите vulkan-tools
+
+== NVIDIA ==
+[не найдено] nvidia-smi; это нормально для Intel/AMD-only системы
+
+Отчёт завершён. Перед публикацией просмотрите его вручную.

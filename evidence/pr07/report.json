@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR07",
+  "commit": "496096790f02c305501b6372e3512822a8d0e8f6",
+  "course_kit": {
+    "version": "v1-w08",
+    "archive_sha256": "aea8efd0a51668af63f2e475b82bfa28bd76c21f20d8afea6b136d43a56a88fb"
+  },
+  "commands": [
+    "source /opt/ros/lyrical/setup.bash",
+    "cd \"$(git rev-parse --show-toplevel)\"",
+    "ros2 pkg prefix ackermann_msgs && ros2 pkg prefix ros_gz_bridge",
+    "python3 -c 'from ackermann_msgs.msg import AckermannDriveStamped; from rclpy.serialization import serialize_message; serialize_message(AckermannDriveStamped()); print(\"Ackermann type support loads\")'",
+    "colcon build --symlink-install --packages-up-to course_simulation",
+    "source install/setup.bash",
+    "export GZ_SIM_RESOURCE_PATH=\"$PWD/src/course_simulation/models${GZ_SIM_RESOURCE_PATH:+:$GZ_SIM_RESOURCE_PATH}\"",
+    "gz sdf -k src/course_simulation/models/course_ackermann/model.sdf",
+    "ros2 launch course_simulation simulation.launch.py world:=$PWD/src/course_simulation/worlds/mcity-minimal.sdf bridge_config:=$PWD/src/course_simulation/config/bridge.yaml headless:=true test_mode:=fixed test_speed:=0.15 test_steering:=0.0",
+    "ros2 topic info -v /vehicle/gz_cmd_vel",
+    "gz topic -i -t /model/course_ackermann/cmd_vel",
+    "ros2 topic echo /clock --once",
+    "ros2 topic hz /vehicle/scan",
+    "ros2 topic echo /drive/safe --once --qos-reliability reliable",
+    "ros2 topic echo /vehicle/gz_cmd_vel --once --qos-reliability reliable",
+    "timeout 30s gz topic -e -t /model/course_ackermann/cmd_vel -n 1",
+    "ros2 topic echo /vehicle/odom_gz --once --qos-reliability reliable --field header",
+    "ros2 topic echo /vehicle/odom --once --qos-reliability reliable",
+    "ros2 run tf2_ros tf2_echo odom base_link --ros-args -p use_sim_time:=true",
+    "gz topic -e -t /world/mcity_minimal/dynamic_pose/info -n 1",
+    "python3 evidence/pr07/measure_rates.py --duration 30",
+    "timeout --preserve-status --signal=TERM --kill-after=240s 60s ros2 bag record --storage mcap --use-sim-time -o fixtures/pr07-sensors --topics /vehicle/camera/image_raw /vehicle/scan /vehicle/imu /vehicle/odom /tf /tf_static /clock",
+    "ros2 bag info fixtures/pr07-sensors",
+    "ros2 launch course_simulation simulation.launch.py bridge_config:=$PWD/src/course_simulation/config/bridge-broken.yaml headless:=true",
+    "ros2 topic info -v /vehicle/imu",
+    "timeout 4 ros2 topic echo /vehicle/imu --once --qos-reliability best_effort",
+    "gz topic -i -t /vehicle/imu && gz topic -e -t /vehicle/imu -n 1",
+    "ros2 launch course_simulation simulation.launch.py bridge_config:=$PWD/src/course_simulation/config/bridge.yaml headless:=true",
+    "ros2 topic hz /vehicle/imu --window 20",
+    "colcon test --packages-select course_simulation --event-handlers console_direct+",
+    "colcon test-result --verbose",
+    "python3 .course-kit/v1/tools/check_practice.py PR07 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "Сборка: colcon build --symlink-install --packages-up-to course_simulation (course_description + course_simulation) завершается успешно",
+      "status": "passed"
+    },
+    {
+      "name": "colcon test: 43 теста в test_kinematics, test_bridge_config, test_model, 0 ошибок, 0 падений",
+      "status": "passed"
+    },
+    {
+      "name": "Адаптер привода: прямое движение (0.5 м/с, 0 рад) даёт linear.x=0.5, angular.z=0",
+      "status": "passed"
+    },
+    {
+      "name": "Адаптер привода: поворот (1.0 м/с, 0.3 рад) даёт angular.z = tan(0.3)/0.8",
+      "status": "passed"
+    },
+    {
+      "name": "Адаптер привода: нулевая скорость не разворачивает Ackermann-шасси (angular.z=0)",
+      "status": "passed"
+    },
+    {
+      "name": "Адаптер привода: ограничения v<=1.2 м/с, |delta|<=0.45 рад, отрицательная скорость -> 0",
+      "status": "passed"
+    },
+    {
+      "name": "Адаптер привода: устаревшая метка (>0.25 с) и метка из будущего дают нулевой Twist и причину, граница 0.25 с ещё принимается",
+      "status": "passed"
+    },
+    {
+      "name": "Адаптер привода: NaN/∞ в speed или steering отклоняются с диагностической причиной",
+      "status": "passed"
+    },
+    {
+      "name": "Watchdog: после остановки источника /drive/safe адаптер один раз публикует нулевой Twist (evidence/pr07/turn-path.txt)",
+      "status": "passed"
+    },
+    {
+      "name": "Адаптер одометрии: frames course_ackermann/odom -> course_ackermann/base_link нормализуются в odom -> base_link, stamp/pose/twist/covariance сохраняются",
+      "status": "passed"
+    },
+    {
+      "name": "Адаптер одометрии: чужой префикс, неверный child_frame и NaN/∞ (включая covariance) отклоняются",
+      "status": "passed"
+    },
+    {
+      "name": "Static-проверка bridge.yaml: 6 мостов, направления и типы, sensor data QoS для камеры/лидара/IMU, CLOCK для /clock, отсутствие /drive/raw и /drive/safe",
+      "status": "passed"
+    },
+    {
+      "name": "Static-проверка bridge-broken.yaml: дефектная копия не проходит ту же валидацию, отличия только в /vehicle/imu",
+      "status": "passed"
+    },
+    {
+      "name": "Static-проверка SDF: один include model://course_ackermann, сенсоры с контрактными topic/frame, OGRE2, physics, scene broadcaster, IMU system, оси колёс по Y",
+      "status": "passed"
+    },
+    {
+      "name": "Headless-запуск: gz sim -s -r --headless-rendering, один bridge, /clock и сенсоры живут, лог в evidence/pr07/headless.txt",
+      "status": "passed"
+    },
+    {
+      "name": "Полный путь /drive/safe -> адаптер -> bridge -> Gazebo -> odometry: 0.15 м/с и 0.25/0.3 рад совпадают на обеих сторонах, одометрия и tf растут согласованно (evidence/pr07/command-path.txt, turn-path.txt)",
+      "status": "passed"
+    },
+    {
+      "name": "Запись: fixtures/pr07-sensors, MCAP, --use-sim-time, длительность 44.577 с, все 7 топиков ненулевые, /tf_static присутствует (evidence/pr07/bag-info.txt)",
+      "status": "passed"
+    },
+    {
+      "name": "Дефект: bridge-broken.yaml (IMU ROS_TO_GZ + /vehicle/imu_raw) — 0 издателей /vehicle/imu, echo exit=124, Gazebo всё ещё публикует; после исправления 1 издатель, ~90-95 Гц, один bridge (defect-before.txt, defect-after.txt)",
+      "status": "passed"
+    },
+    {
+      "name": "Симуляционное время: ros2 topic echo /clock --once возвращает sec=4.165 (время симуляции), а не время компьютера (evidence/pr07/wheels.txt)",
+      "status": "passed"
+    },
+    {
+      "name": "Колёса и руль в рантайме: orientation front_left_wheel меняется между двумя снимками dynamic_pose (катится вокруг поперечной оси), front_left_knuckle держит yaw ≈0.33 рад при команде 0.3 рад (evidence/pr07/wheels.txt)",
+      "status": "passed"
+    },
+    {
+      "name": "check_practice.py PR07: обязательные пути, sensors.json/headless.txt/bag-info.txt/odom-adapter.md и все шесть claims валидны; правило двух коммитов НЕ выполнено — коммиты запрещены, report.commit указывает на коммит ПР06, поэтому checker возвращает failed на незакоммиченные пути",
+      "status": "failed"
+    }
+  ],
+  "defect": {
+    "reproducer": "Копия конфигурации моста config/bridge-broken.yaml отличается от config/bridge.yaml только записью IMU: gz_topic_name заменён на /vehicle/imu_raw, а direction — на ROS_TO_GZ. Запуск: ros2 launch course_simulation simulation.launch.py bridge_config:=$PWD/src/course_simulation/config/bridge-broken.yaml headless:=true. В логе моста видно 'Creating ROS->GZ Bridge: [/vehicle/imu (sensor_msgs/msg/Imu) -> /vehicle/imu_raw (gz.msgs.IMU)]'. ros2 topic info -v /vehicle/imu показывает Publisher count: 0 и Subscription count: 1 (сам мост), timeout 4 ros2 topic echo /vehicle/imu --once завершается с exit=124, при этом gz topic -e -t /vehicle/imu -n 1 печатает данные IMU с frame_id imu_link, а у топика /vehicle/imu_raw в Gazebo есть издатель моста, но нет подписчиков. Команда /drive/safe -> /vehicle/gz_cmd_vel при этом продолжает работать, то есть дефект локализован в IMU.",
+    "root_cause": "В ros_gz_bridge ключ direction задаёт, какая сторона создаёт ROS-издателя. При GZ_TO_ROS мост создаёт ROS-издателя /vehicle/imu и подписывается на Gazebo-топик из gz_topic_name. В дефектной копии direction заменён на ROS_TO_GZ: мост создаёт ROS-подписчика /vehicle/imu (поэтому топик существует и выглядит 'живым' в ros2 topic list), а в Gazebo публикует в /vehicle/imu_raw. Одновременно gz_topic_name содержит опечатку, поэтому даже при верном направлении мост читал бы несуществующий источник. Совпадение имён ROS-топиков ничего не доказывает: данные в ROS не приходят, хотя Gazebo-топик /vehicle/imu существует и заполнен. Проверка только по имени топика или по факту наличия издателя в Gazebo пропускает такую ошибку.",
+    "proof_after": "В рабочей конфигурации config/bridge.yaml запись IMU снова имеет gz_topic_name: /vehicle/imu и direction: GZ_TO_ROS, QoS SENSOR_DATA. Повторный запуск (тот же единственный мост, второго не добавляли) даёт в логе 'Creating GZ->ROS Bridge: [/vehicle/imu (gz.msgs.IMU) -> /vehicle/imu (sensor_msgs/msg/Imu)]'; ros2 topic info -v /vehicle/imu показывает Publisher count: 1 от ros_gz_bridge с BEST_EFFORT/KEEP_LAST(5); ros2 topic echo /vehicle/imu --once печатает сообщение с simulation stamp и frame_id imu_link; ros2 topic hz /vehicle/imu --window 20 показывает 90-95 Гц на симуляционном времени (в последнем окне под нагрузкой 62 Гц); ps показывает ровно один процесс parameter_bridge; gz topic -i -t /vehicle/imu показывает издателя Gazebo и подписчика-мост. См. evidence/pr07/defect-before.txt и evidence/pr07/defect-after.txt."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true,
+    "headless_verified": true,
+    "recording_verified": true,
+    "odometry_tf_owned": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2.5
+  },
+  "ai_used": true
+}

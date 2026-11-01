@@ -1,0 +1,62 @@
+# PR07 headless run 2026-11-01T09:48:58+00:00
+# host: Linux 6.12.69-linuxkit aarch64, ROS_DISTRO=lyrical
+# gazebo: 10.5.0
+# gz binary: /opt/ros/lyrical/opt/gz_tools_vendor/bin/gz
+$ ros2 launch course_simulation simulation.launch.py world:=$PWD/src/course_simulation/worlds/mcity-minimal.sdf bridge_config:=$PWD/src/course_simulation/config/bridge.yaml headless:=true test_mode:=fixed test_speed:=0.15 test_steering:=0.0
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-01-09-49-00-063857-ac34dc8fca40-7092
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [launch.user]: PR07 gz server command: gz sim -s -r --headless-rendering /home/ubuntu/src/course_simulation/worlds/mcity-minimal.sdf
+[INFO] [launch.user]: PR07 bridge config: /home/ubuntu/src/course_simulation/config/bridge.yaml
+[INFO] [launch.user]: PR07 namespace: <root>
+[INFO] [gz_sim_server-1]: process started with pid [7104]
+[INFO] [robot_state_publisher-2]: process started with pid [7105]
+[INFO] [parameter_bridge-3]: process started with pid [7107]
+[INFO] [ackermann_adapter.py-4]: process started with pid [7108]
+[INFO] [odom_adapter.py-5]: process started with pid [7111]
+[INFO] [test_drive_source.py-6]: process started with pid [7112]
+[robot_state_publisher-2] [WARN] [1793526541.097063959] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-2] [INFO] [1793526541.111159375] [robot_state_publisher]: Robot initialized
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="camera_link"]/sensor[@name="front_camera"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L88]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="lidar_link"]/sensor[@name="lidar"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L102]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="imu_link"]/sensor[@name="imu"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L112]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[parameter_bridge-3] [INFO] [1793526542.053180126] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/vehicle/gz_cmd_vel (geometry_msgs/msg/Twist) -> /model/course_ackermann/cmd_vel (gz.msgs.Twist)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526542.099650751] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/model/course_ackermann/odometry (gz.msgs.Odometry) -> /vehicle/odom_gz (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526542.200245834] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/vehicle/scan (gz.msgs.LaserScan) -> /vehicle/scan (sensor_msgs/msg/LaserScan)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526542.209693959] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/vehicle/imu (gz.msgs.IMU) -> /vehicle/imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526542.212021168] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/vehicle/camera/image_raw (gz.msgs.Image) -> /vehicle/camera/image_raw (sensor_msgs/msg/Image)] (Lazy 0)
+[parameter_bridge-3] [INFO] [1793526542.213498043] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[test_drive_source.py-6] [INFO] [1793526542.389239918] [test_drive_source]: test_drive_source: mode=fixed on /drive/safe at 10.0 Hz with simulation stamps (stand-in for the PR11 supervisor)
+[test_drive_source.py-6] [INFO] [1793526542.391648834] [test_drive_source]: fixed command: speed=0.15 m/s steering=0.00 rad
+[ackermann_adapter.py-4] [INFO] [1793526542.813341668] [ackermann_adapter]: ackermann_adapter: /drive/safe -> /vehicle/gz_cmd_vel; wheel_base=0.80 m, v<=1.20 m/s, |delta|<=0.45 rad, timeout=0.25 s
+[odom_adapter.py-5] [INFO] [1793526542.879388043] [odom_adapter]: odom_adapter: /vehicle/odom_gz (course_ackermann/odom, course_ackermann/base_link) -> /vehicle/odom (odom, base_link), single owner of dynamic tf odom->base_link
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="camera_link"]/sensor[@name="front_camera"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L88]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="lidar_link"]/sensor[@name="lidar"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L102]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[gz_sim_server-1] [1;33mWarning [Utils.cc:132][0m [/sdf/model[@name="course_ackermann"]/link[@name="imu_link"]/sensor[@name="imu"]/gz_frame_id:/home/ubuntu/install/course_simulation/share/course_simulation/models/course_ackermann/model.sdf:L112]: XML Element[gz_frame_id], child of element[sensor], not defined in SDF. Copying[gz_frame_id] as children of [sensor].
+[parameter_bridge-3] [INFO] [1793526543.349175543] [ros_gz_bridge]: Passing message from ROS geometry_msgs/msg/Twist to Gazebo gz.msgs.Twist (showing msg only once per type)
+[test_drive_source.py-6] Traceback (most recent call last):
+[test_drive_source.py-6]   File "/home/ubuntu/install/course_simulation/lib/course_simulation/test_drive_source.py", line 134, in <module>
+[test_drive_source.py-6]     main()
+[test_drive_source.py-6]     ~~~~^^
+[test_drive_source.py-6]   File "/home/ubuntu/install/course_simulation/lib/course_simulation/test_drive_source.py", line 124, in main
+[test_drive_source.py-6]     rclpy.spin(node)
+[test_drive_source.py-6]     ~~~~~~~~~~^^^^^^
+[test_drive_source.py-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/__init__.py", line 324, in spin
+[test_drive_source.py-6]     executor.spin_once()
+[test_drive_source.py-6]     ~~~~~~~~~~~~~~~~~~^^
+[test_drive_source.py-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1033, in spin_once
+[test_drive_source.py-6]     self._spin_once_impl(timeout_sec)
+[test_drive_source.py-6]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+[test_drive_source.py-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 1013, in _spin_once_impl
+[test_drive_source.py-6]     handler, entity, node = self.wait_for_ready_callbacks(
+[test_drive_source.py-6]                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+[test_drive_source.py-6]         timeout_sec, None, wait_condition)
+[test_drive_source.py-6]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[test_drive_source.py-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 983, in wait_for_ready_callbacks
+[test_drive_source.py-6]     return next(self._cb_iter)
+[test_drive_source.py-6]   File "/opt/ros/lyrical/lib/python3.14/site-packages/rclpy/executors.py", line 889, in _wait_for_ready_callbacks
+[test_drive_source.py-6]     raise ExternalShutdownException()
+[test_drive_source.py-6] rclpy.executors.ExternalShutdownException
+[ERROR] [test_drive_source.py-6]: process has died [pid 7112, exit code 1, cmd '/home/ubuntu/install/course_simulation/lib/course_simulation/test_drive_source.py --ros-args -r __ns:=/ --params-file /tmp/launch_params_x_xr53s7'].
+[ackermann_adapter.py-4] [WARN] [1793526803.219264927] [ackermann_adapter]: command watchdog: no fresh /drive/safe command for more than 0.25 s of simulation time, publishing zero Twist
+[ackermann_adapter.py-4] [WARN] [1793526866.229927262] [ackermann_adapter]: command watchdog: no fresh /drive/safe command for more than 0.25 s of simulation time, publishing zero Twist
+[ackermann_adapter.py-4] [WARN] [1793526889.804431634] [ackermann_adapter]: command watchdog: no fresh /drive/safe command for more than 0.25 s of simulation time, publishing zero Twist
