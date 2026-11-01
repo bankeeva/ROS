@@ -1,0 +1,12 @@
+Failed to create stream fd: No such file or directory
+Failed to create stream fd: No such file or directory
+Failed to create stream fd: No such file or directory
+Finished <<< localization_case [0.12s]
+
+Summary: 1 package finished [0.30s]
+
+Total Test time (real) =   2.40 sec
+Finished <<< localization_case [2.44s]
+
+Summary: 1 package finished [2.67s]
+Summary: 56 tests, 0 errors, 0 failures, 0 skipped

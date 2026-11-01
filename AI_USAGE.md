@@ -59,3 +59,13 @@
 |---|---|---|---|---|
 | DeepSeek | Веб-интерфейс чата | Код и launch | Подсказки по `ackermann_adapter.py`, `odom_adapter.py`, `kinematics.py`, `simulation.launch.py`, `bridge.yaml`, `CMakeLists.txt`/`package.xml`, разбор ошибок `ament_python_install_package` и `warn`/`warning` | Самостоятельная правка файлов, `colcon build`, `colcon test`, живой `ros2 topic echo` и `tf2_echo` |
 | DeepSeek | Веб-интерфейс чата | Диагностика и обучение | Разбор связки Gazebo/ros_gz, контракта Ackermann→Twist, QoS-профилей `SENSOR_DATA`/`CLOCK`, `--use-sim-time`, RTF и причин дефекта моста (`direction`, опечатка в `gz_topic_name`) | Самостоятельное воспроизведение дефекта через `bridge-broken.yaml`, `ros2 topic info -v`, `gz topic -e`, фикс одной конфигурацией, запись `fixtures/pr07-sensors` и запуск `measure_rates.py` |
+
+## PR08
+
+**ai_used:** true
+
+| Модель | Инструмент / среда | Компонент | Характер помощи | Как проверено |
+|---|---|---|---|---|
+| DeepSeek | Веб-интерфейс чата | Разбор задания и теории | Объяснение AMCL, цепочки `map → odom → base_link → lidar_link`, REP-105, lifecycle-нод Nav2, QoS для `/clock` и `/tf_static`, смысла `covariance[0] + covariance[7]` | Самостоятельный проход по дереву frames через `tf2_echo map odom`, `tf2_echo map base_link` и `ros2 topic info -v`, сверка владельцев с записью |
+| DeepSeek | Веб-интерфейс чата | Пакет `localization_case` | Подсказки по структуре `package.xml`/`CMakeLists.txt`, аргументам `localization.launch.py`, установке launch/config и Python-скрипта, разбор ошибок сборки и `ros2 run` | Самостоятельная правка файлов, `colcon build --symlink-install`, `colcon test`, запуск launch и проверка `ros2 lifecycle get` |
+| DeepSeek | Веб-интерфейс чата | Измерение и дефект | Объяснение окна `[t0+10; t0+30)`, частоты 10 Гц, почему исключение tf2 считается неуспехом, почему при `base_frame_id: chassis` AMCL не публикует `map → odom`, почему важен порядок остановки при дефекте | Самостоятельный запуск измерителя до player, проверка 200/200 запросов и 50 сообщений `/amcl_pose`, ручное воспроизведение дефекта и возврат `base_link` |

@@ -1,0 +1,98 @@
+# ПР08: результат после возврата base_frame_id
+
+## Команда
+
+```bash
+ros2 launch localization_case localization.launch.py \
+  params_file:=$PWD/src/localization_case/config/amcl.yaml \
+  map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml
+ros2 run localization_case localization_metrics.py --ros-args \
+  -p output_path:=$PWD/evidence/pr08/localization.json \
+  -p map_yaml:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml \
+  -p map_pgm:=$PWD/.course-kit/v1/fixtures/pr08/map.pgm \
+  -p recording_path:=fixtures/pr07-sensors-fixed
+ros2 bag play fixtures/pr07-sensors-fixed
+```
+
+## Состояние управляемых нод
+
+```
+--- lifecycle ---
+active [3]
+active [3]
+```
+
+## Цепочка map -> odom -> base_link
+
+```bash
+ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true
+```
+
+```
+At time 38.400000000
+- Translation: [0.242, 0.229, 0.000]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, -0.036, 0.999]
+- Rotation: in RPY (radian) [0.000, 0.000, -0.071]
+- Rotation: in RPY (degree) [0.000, 0.000, -4.092]
+- Matrix:
+  0.997  0.071  0.000  0.242
+ -0.071  0.997 -0.000  0.229
+ -0.000  0.000  1.000  0.000
+  0.000  0.000  0.000  1.000
+At time 39.400000000
+- Translation: [0.264, 0.185, 0.000]
+```
+
+```bash
+ros2 run tf2_ros tf2_echo map base_link --ros-args -p use_sim_time:=true
+```
+
+```
+At time 44.558000000
+- Translation: [6.794, -0.176, 0.000]
+- Rotation: in Quaternion (xyzw) [0.000, 0.000, -0.001, 1.000]
+- Rotation: in RPY (radian) [0.000, 0.000, -0.002]
+- Rotation: in RPY (degree) [0.000, 0.000, -0.114]
+- Matrix:
+  1.000  0.002  0.000  6.794
+ -0.002  1.000 -0.000 -0.176
+ -0.000  0.000  1.000  0.000
+  0.000  0.000  0.000  1.000
+At time 45.558000000
+- Translation: [6.934, -0.181, 0.000]
+```
+
+## /amcl_pose
+
+```bash
+ros2 topic echo /amcl_pose --once
+```
+
+```
+header:
+  stamp:
+    sec: 52
+    nanosec: 400000000
+  frame_id: map
+pose:
+  pose:
+    position:
+      x: 7.966230854296511
+      y: -0.04767859179089187
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+```
+
+## Итог измерения
+
+```
+[INFO] [1793534487.189316635] [localization_metrics]: localization_metrics: warmup=10.0 s, window=20.0 s, rate=10.0 Hz, output=/home/ubuntu/evidence/pr08/localization.json
+[INFO] [1793534489.152676719] [localization_metrics]: t0=0.121 s, window=[10.121, 30.121)
+[INFO] [1793534519.052845678] [localization_metrics]: window finished: tf=200/200, amcl_pose=50, rate_misses=0
+[INFO] [1793534551.143570595] [localization_metrics]: result: tf=200/200 (1.0000), amcl_pose=50, median=0.026252 m^2, recording=58.078 s, status=ok
+```
+
+`tf_queries_successful / tf_queries_total = 200 / 200`, доступность `map -> odom` равна 1.0,
+медиана `covariance[0] + covariance[7]` равна 0.026252 м², число сообщений `/amcl_pose` в окне — 50.

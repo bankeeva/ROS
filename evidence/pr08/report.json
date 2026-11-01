@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "practice_id": "PR08",
+  "commit": "634051ecf1f48f65ef108ded8d53a69fa3eb4be3",
+  "course_kit": {
+    "version": "v1-w08",
+    "archive_sha256": "aea8efd0a51668af63f2e475b82bfa28bd76c21f20d8afea6b136d43a56a88fb"
+  },
+  "commands": [
+    "source /opt/ros/lyrical/setup.bash",
+    "apt-get install -y ros-lyrical-nav2-amcl ros-lyrical-nav2-map-server ros-lyrical-nav2-lifecycle-manager ros-lyrical-tf2-ros-py ros-lyrical-tf2-tools",
+    "ros2 pkg prefix nav2_amcl && ros2 pkg prefix nav2_map_server && ros2 pkg prefix nav2_lifecycle_manager",
+    "colcon build --symlink-install --packages-select localization_case",
+    "source install/setup.bash",
+    "colcon test --packages-select localization_case --event-handlers console_direct+",
+    "colcon test-result --verbose",
+    "ros2 launch course_simulation simulation.launch.py world:=$PWD/src/course_simulation/worlds/mcity-minimal.sdf bridge_config:=$PWD/src/course_simulation/config/bridge.yaml headless:=true use_test_source:=false",
+    "ros2 run course_simulation test_drive_source.py --ros-args -p use_sim_time:=true -p mode:=fixed -p speed:=0.15 -p steering:=0.0",
+    "ros2 bag record --storage mcap --use-sim-time -o fixtures/pr07-sensors-fixed --topics /vehicle/scan /vehicle/odom /tf /tf_static /clock",
+    "ros2 bag info fixtures/pr07-sensors-fixed",
+    "ros2 launch localization_case localization.launch.py params_file:=$PWD/src/localization_case/config/amcl.yaml map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml",
+    "ros2 lifecycle get /map_server && ros2 lifecycle get /amcl",
+    "ros2 run localization_case localization_metrics.py --ros-args -p output_path:=$PWD/evidence/pr08/localization.json -p map_yaml:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml -p map_pgm:=$PWD/.course-kit/v1/fixtures/pr08/map.pgm -p recording_path:=fixtures/pr07-sensors-fixed",
+    "ros2 bag play fixtures/pr07-sensors-fixed",
+    "ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true",
+    "ros2 run tf2_ros tf2_echo map base_link --ros-args -p use_sim_time:=true",
+    "ros2 topic echo /amcl_pose --once",
+    "ros2 launch localization_case localization.launch.py params_file:=$PWD/src/localization_case/config/amcl-defect.yaml map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml",
+    "timeout 6 ros2 topic echo /amcl_pose --once",
+    "timeout 6 ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true",
+    "python3 .course-kit/v1/tools/validate_localization.py evidence/pr08/localization.json --schema .course-kit/v1/fixtures/pr08/localization-result-v1.schema.json --map-yaml evidence/pr08/map.yaml --map-pgm evidence/pr08/map.pgm",
+    "python3 .course-kit/v1/tools/check_practice.py PR08 --submission ."
+  ],
+  "tests": [
+    {
+      "name": "Сборка: colcon build --symlink-install --packages-select localization_case завершается успешно",
+      "status": "passed"
+    },
+    {
+      "name": "colcon test: три набора localization_case (test_config, test_launch, test_metrics), 10 pytest-тестов, 0 ошибок",
+      "status": "passed"
+    },
+    {
+      "name": "Lifecycle: map_server и amcl переведены менеджером в active, ros2 lifecycle get возвращает active [3] для обеих нод",
+      "status": "passed"
+    },
+    {
+      "name": "Карта: map_server читает 52 X 24 @ 0.250 m/cell, origin (-2.5, -3.0, 0), режим trinary",
+      "status": "passed"
+    },
+    {
+      "name": "Цепочка map -> odom -> base_link -> lidar_link связна; map -> odom публикует только AMCL, odom -> base_link приходит из /tf записи, base_link -> lidar_link из /tf_static (xyz=(0, 0, 0.2))",
+      "status": "passed"
+    },
+    {
+      "name": "Дефект base_frame_id=chassis: 119 ошибок 'Couldn't transform from lidar_link to chassis, target_frame does not exist', tf2_echo map odom не находит кадр map, /amcl_pose не публикуется",
+      "status": "passed"
+    },
+    {
+      "name": "Исправление base_frame_id=base_link на тех же карте, записи и начальной позе: доступность map -> odom 200/200 = 1.0, 50 сообщений /amcl_pose, медиана covariance[0]+covariance[7] = 0.026252 м²",
+      "status": "passed"
+    },
+    {
+      "name": "Запись fixtures/pr07-sensors-fixed: 58.078 с, /clock 0.121..58.199, /vehicle/odom 0.158..58.198, /vehicle/scan 0.200..58.100, окно [10.121; 30.121) помещается в запись",
+      "status": "passed"
+    },
+    {
+      "name": "Скриншот RViz: Fixed Frame map, Map /map, LaserScan /vehicle/scan (Best Effort); красные точки скана ложатся на стены и асимметричные выступы (evidence/pr08/scan-map.png)",
+      "status": "passed"
+    },
+    {
+      "name": "validate_localization.py: схема, метрики и SHA-256 обоих файлов карты корректны",
+      "status": "passed"
+    },
+    {
+      "name": "check_practice.py PR08: обязательные пути, report.json и claims валидны; правило двух коммитов НЕ выполнено — коммиты запрещены, report.commit указывает на последний существующий коммит e3b1308, поэтому checker возвращает failed на незакоммиченные src/localization_case, fixtures/pr07-sensors-fixed и explanation.md",
+      "status": "failed"
+    }
+  ],
+  "defect": {
+    "reproducer": "Копия профиля config/amcl-defect.yaml отличается от config/amcl.yaml только строкой base_frame_id: chassis. Запуск: ros2 launch localization_case localization.launch.py params_file:=$PWD/src/localization_case/config/amcl-defect.yaml map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml, затем ros2 bag play fixtures/pr07-sensors-fixed. map_server активен и читает карту 52 X 24 @ 0.250 m/cell. На каждом скане AMCL пишет: \"Couldn't transform from lidar_link to chassis, even though the message notifier is in use: (\"chassis\" passed to lookupTransform argument target_frame does not exist. )\"; за опыт сохранено 119 таких сообщений. timeout 6 ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true печатает 'Waiting for transform map -> odom: Invalid frame ID \"map\" ... frame does not exist', timeout 6 ros2 topic echo /amcl_pose --once не получает ни одного сообщения. Локализация остановлена при прогрессе player 24.27/58.08 с, пока player ещё публиковал /clock, затем остановлен player.",
+    "root_cause": "AMCL в laser callback пересчитывает скан из lidar_link в base_frame_id на метке времени скана. В tf-дереве есть base_link -> lidar_link (static из robot_state_publisher), odom -> base_link (dynamic из записи) и map -> odom (публикует сам AMCL), но кадра chassis нет. lookupTransform(target=chassis) выбрасывает исключение, AMCL логирует ошибку и выходит из обработчика до updateFilter и publishAmclPose. Поэтому фильтр не обновляется, map -> odom не публикуется, /amcl_pose отсутствует, а кадр map для внешних клиентов не существует. Это не карта: map_server загрузил корректные 52 X 24 @ 0.25 м и был active. Это и не переустановка Nav2: nav2_amcl, nav2_map_server и nav2_lifecycle_manager установлены, менеджер перевёл обе ноды в active, а тот же запуск с base_link даёт 200/200 успешных запросов.",
+    "proof_after": "В config/amcl.yaml возвращён base_frame_id: base_link; карта, запись fixtures/pr07-sensors-fixed, начальная поза (0, 0, 0), окно 20 с и частота 10 Гц не менялись, все процессы запущены заново. ros2 lifecycle get /map_server и /amcl возвращают active [3]. tf2_echo map odom на t=38.4 даёт translation [0.242, 0.229] и yaw -4.092°, tf2_echo map base_link на t=44.558 — [6.794, -0.176], /amcl_pose на t=52.4 — x=7.9662, y=-0.0477. Измеритель за окно [10.121; 30.121) сделал 200 запросов map -> odom, все 200 успешны (доступность 1.0), получил 50 сообщений /amcl_pose, медиана covariance[0]+covariance[7] = 0.026252 м². Итог проверен validate_localization.py: схема, метрики и SHA-256 карты корректны."
+  },
+  "claims": {
+    "public_tests_passed": true,
+    "defect_reproduced": true,
+    "defect_fixed": true
+  },
+  "time": {
+    "contact_academic_hours": 2,
+    "self_study_hours": 2.5
+  },
+  "ai_used": true
+}

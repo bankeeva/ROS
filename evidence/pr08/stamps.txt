@@ -1,0 +1,58 @@
+# ПР08: метки времени записи fixtures/pr07-sensors-fixed
+
+Все значения — секунды симуляции из записанного `/clock`, а не время компьютера.
+
+```
+bag: /home/ubuntu/fixtures/pr07-sensors-fixed
+/clock             count= 58079 first=  0.121000 last= 58.199000 dt=58.078000
+/tf                count=  2903 first=  0.158000 last= 58.198000 dt=58.040000
+/vehicle/odom      count=  2903 first=  0.158000 last= 58.198000 dt=58.040000
+/vehicle/scan      count=   580 first=  0.200000 last= 58.100000 dt=57.900000
+
+tf edges in /tf: {('odom', 'base_link'): 2903}
+tf_static:
+  base_link -> camera_link xyz=(0.200, 0.000, 0.100)
+  base_link -> imu_link xyz=(-0.100, 0.000, 0.000)
+  base_link -> lidar_link xyz=(0.000, 0.000, 0.200)
+
+scan(0.2) - odom(0.158) = 0.042 s; clock(0.121) -> odom(0.158) = 0.037 s
+```
+
+`/clock` идёт с частотой около 1000 Гц, `/tf` и `/vehicle/odom` — 50 Гц, `/vehicle/scan` — 10 Гц.
+Запись начинается с `t=0.121`, заканчивается на `t=58.199`; окно измерения `[10.121; 30.121)`
+целиком помещается в запись.
+
+## Живые заголовки во время replay (после окна измерения)
+
+`/vehicle/scan`:
+
+```
+stamp:
+  sec: 51
+  nanosec: 300000000
+frame_id: lidar_link
+---
+```
+
+`/vehicle/odom`:
+
+```
+stamp:
+  sec: 52
+  nanosec: 518000000
+frame_id: odom
+---
+```
+
+`/clock`:
+
+```
+clock:
+  sec: 54
+  nanosec: 59000000
+---
+```
+
+Разница первых меток: скан появляется через 0.042 с после первой одометрии и через 0.079 с
+после первого `/clock`. Это нормальный порядок: одометрия и `/clock` начинаются раньше,
+чем лидар выдаёт первый скан.

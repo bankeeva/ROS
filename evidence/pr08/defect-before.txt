@@ -1,0 +1,59 @@
+# ПР08: воспроизведение дефекта base_frame_id
+
+## Команда
+
+```bash
+ros2 launch localization_case localization.launch.py \
+  params_file:=$PWD/src/localization_case/config/amcl-defect.yaml \
+  map:=$PWD/.course-kit/v1/fixtures/pr08/map.yaml
+ros2 bag play fixtures/pr07-sensors-fixed
+```
+
+## Состояние менеджера
+
+```
+[lifecycle_manager-3] [INFO] [1793533690.949882753] [lifecycle_manager_localization]: Managed nodes are active
+```
+
+## Первая ошибка AMCL
+
+```
+[amcl-2] [ERROR] [1793533699.134142048] [amcl]: Couldn't transform from lidar_link to chassis, even though the message notifier is in use: ("chassis" passed to lookupTransform argument target_frame does not exist. )
+```
+
+Повторяется на каждом скане, всего 119 сообщений об ошибке за время дефектного опыта.
+
+## Проверка map -> odom
+
+```bash
+timeout 6 ros2 run tf2_ros tf2_echo map odom --ros-args -p use_sim_time:=true
+```
+
+```
+[INFO] [1793533716.721740292] [tf2_echo]: Waiting for transform map ->  odom: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[INFO] [1793533718.721654793] [tf2_echo]: Waiting for transform map ->  odom: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[INFO] [1793533719.724323585] [tf2_echo]: Waiting for transform map ->  odom: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[INFO] [1793533720.134079086] [rclcpp]: signal_handler(signum=2)
+```
+
+Кадр `map` не существует, потому что AMCL не смог вычислить позу и не опубликовал `map -> odom`.
+
+## Проверка /amcl_pose
+
+```bash
+timeout 6 ros2 topic echo /amcl_pose --once
+```
+
+```
+сообщений нет; команда завершена по таймауту
+```
+
+## Порядок остановки
+
+Прогресс player в момент остановки локализации:
+
+```
+[2K[24.392000000] Duration 24.27/58.08 [R]
+```
+
+Сначала остановлен launch локализации, пока player ещё публиковал `/clock`, затем player.

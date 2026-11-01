@@ -1,0 +1,55 @@
+[INFO] [launch]: All log files can be found below /root/.ros/log/2026-11-01-12-01-14-372123-ac34dc8fca40-34527
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [map_server-1]: process started with pid [34538]
+[INFO] [amcl-2]: process started with pid [34539]
+[INFO] [lifecycle_manager-3]: process started with pid [34540]
+[lifecycle_manager-3] [INFO] [1793534474.564729046] [lifecycle_manager_localization]: Creating
+[lifecycle_manager-3] [INFO] [1793534474.565002796] [lifecycle_manager_localization]: [34m[1mCreating and initializing lifecycle publishers[0m[0m
+[lifecycle_manager-3] [INFO] [1793534474.565357379] [lifecycle_manager_localization]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[amcl-2] [INFO] [1793534474.566989088] [amcl]: 
+[amcl-2] 	amcl lifecycle node launched. 
+[amcl-2] 	Waiting on external lifecycle transitions to activate
+[amcl-2] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[map_server-1] [INFO] [1793534474.567054588] [map_server]: 
+[map_server-1] 	map_server lifecycle node launched. 
+[map_server-1] 	Waiting on external lifecycle transitions to activate
+[map_server-1] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[map_server-1] [INFO] [1793534474.567182338] [map_server]: Creating
+[amcl-2] [INFO] [1793534474.580652963] [amcl]: Creating
+[lifecycle_manager-3] [INFO] [1793534474.672147088] [lifecycle_manager_localization]: [34m[1mCreating and initializing lifecycle service servers[0m[0m
+[lifecycle_manager-3] [INFO] [1793534474.694546796] [lifecycle_manager_localization]: [34m[1mStarting managed nodes bringup...[0m[0m
+[lifecycle_manager-3] [INFO] [1793534474.694978046] [lifecycle_manager_localization]: [34m[1mConfiguring map_server[0m[0m
+[map_server-1] [INFO] [1793534474.699638754] [map_server]: Configuring
+[map_server-1] [INFO] [1793534474.699880838] [map_io]: Loading yaml file: /home/ubuntu/.course-kit/v1/fixtures/pr08/map.yaml
+[map_server-1] [INFO] [1793534474.709363588] [map_io]: resolution: 0.25
+[map_server-1] [INFO] [1793534474.709553588] [map_io]: origin[0]: -2.5
+[map_server-1] [INFO] [1793534474.709557713] [map_io]: origin[1]: -3
+[map_server-1] [INFO] [1793534474.709560338] [map_io]: origin[2]: 0
+[map_server-1] [INFO] [1793534474.709563129] [map_io]: free_thresh: 0.25
+[map_server-1] [INFO] [1793534474.709565963] [map_io]: occupied_thresh: 0.65
+[map_server-1] [INFO] [1793534474.709571379] [map_io]: mode: trinary
+[map_server-1] [INFO] [1793534474.709575421] [map_io]: negate: 0
+[map_server-1] [INFO] [1793534474.710329213] [map_io]: Loading image_file: /home/ubuntu/.course-kit/v1/fixtures/pr08/map.pgm
+[map_server-1] [INFO] [1793534474.729543338] [map_io]: Read map /home/ubuntu/.course-kit/v1/fixtures/pr08/map.pgm: 52 X 24 map @ 0.25 m/cell
+[lifecycle_manager-3] [INFO] [1793534474.775744338] [lifecycle_manager_localization]: [34m[1mConfiguring amcl[0m[0m
+[amcl-2] [INFO] [1793534474.776470338] [amcl]: Configuring
+[amcl-2] [INFO] [1793534474.776809671] [amcl]: initTransforms
+[amcl-2] [INFO] [1793534474.785874546] [amcl]: initPubSub
+[amcl-2] [INFO] [1793534474.805316004] [amcl]: Subscribed to map topic.
+[lifecycle_manager-3] [INFO] [1793534474.819242421] [lifecycle_manager_localization]: [34m[1mActivating map_server[0m[0m
+[map_server-1] [INFO] [1793534474.822434046] [map_server]: Activating
+[map_server-1] [INFO] [1793534474.822693629] [map_server]: Creating bond (map_server) to lifecycle manager.
+[amcl-2] [INFO] [1793534474.823446754] [amcl]: Received a 52 X 24 map @ 0.250 m/pix
+[lifecycle_manager-3] [INFO] [1793534475.080845838] [lifecycle_manager_localization]: Server map_server connected with bond.
+[lifecycle_manager-3] [INFO] [1793534475.080899671] [lifecycle_manager_localization]: [34m[1mActivating amcl[0m[0m
+[amcl-2] [INFO] [1793534475.081191129] [amcl]: Activating
+[amcl-2] [INFO] [1793534475.081235838] [amcl]: initialPoseReceived
+[amcl-2] [INFO] [1793534475.081391588] [amcl]: Setting pose (0.000000): 0.000 0.000 0.000
+[amcl-2] [INFO] [1793534475.081951754] [amcl]: Creating bond (amcl) to lifecycle manager.
+[lifecycle_manager-3] [INFO] [1793534475.335750921] [lifecycle_manager_localization]: Server amcl connected with bond.
+[lifecycle_manager-3] [INFO] [1793534475.335808588] [lifecycle_manager_localization]: [34m[1mManaged nodes are active[0m[0m
+[lifecycle_manager-3] [INFO] [1793534475.335827546] [lifecycle_manager_localization]: [34m[1mCreating bond timer...[0m[0m
+[amcl-2] [INFO] [1793534489.258102428] [amcl]: createLaserObject
+[amcl-2] [WARN] [1793534522.951025305] [nav2::interfaces]: [1] Message was dropped on topic [/vehicle/scan] due to queue size or network constraints.
+[amcl-2] [WARN] [1793534522.969870221] [nav2::interfaces]: [1] Message was dropped on topic [/vehicle/scan] due to queue size or network constraints.
+[amcl-2] [INFO] [1793534522.986832388] [amcl]: Message Filter dropping message: frame 'lidar_link' at time 33.900 for reason 'the timestamp on the message is earlier than all the data in the transform cache'

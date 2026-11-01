@@ -1,0 +1,4 @@
+[INFO] [1793534487.189316635] [localization_metrics]: localization_metrics: warmup=10.0 s, window=20.0 s, rate=10.0 Hz, output=/home/ubuntu/evidence/pr08/localization.json
+[INFO] [1793534489.152676719] [localization_metrics]: t0=0.121 s, window=[10.121, 30.121)
+[INFO] [1793534519.052845678] [localization_metrics]: window finished: tf=200/200, amcl_pose=50, rate_misses=0
+[INFO] [1793534551.143570595] [localization_metrics]: result: tf=200/200 (1.0000), amcl_pose=50, median=0.026252 m^2, recording=58.078 s, status=ok
