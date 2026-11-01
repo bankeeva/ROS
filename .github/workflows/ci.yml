@@ -93,22 +93,46 @@ jobs:
       #   shell: bash
       #   run: python3 .course-kit/v1/tools/check_practice.py PR05 --submission .
 
-      - name: Build and Test PR06 course_description package
+      # - name: Build and Test PR06 course_description package
+      #   shell: bash
+      #   run: |
+      #     source /opt/ros/lyrical/setup.bash
+      #     colcon build --symlink-install --packages-select course_description
+      #     source install/setup.bash
+      #     test -f "$(ros2 pkg prefix course_description)/share/course_description/urdf/vehicle.urdf.xacro"
+      #     test -f "$(ros2 pkg prefix course_description)/share/course_description/launch/display.launch.py"
+      #     test -f "$(ros2 pkg prefix course_description)/share/course_description/rviz/view.rviz"
+      #     python3 -m py_compile src/course_description/launch/display.launch.py
+      #     python3 -m py_compile src/course_description/test/test_description.py
+      #     xacro "$(ros2 pkg prefix course_description)/share/course_description/urdf/vehicle.urdf.xacro" > /tmp/vehicle.urdf
+      #     check_urdf /tmp/vehicle.urdf
+      #     colcon test --packages-select course_description --event-handlers console_direct+
+      #     colcon test-result --verbose
+
+      # - name: Check PR06 evidence
+      #   shell: bash
+      #   run: python3 .course-kit/v1/tools/check_practice.py PR06 --submission .
+
+      - name: Build and Test PR07 course_simulation package
         shell: bash
         run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ros-lyrical-ackermann-msgs ros-lyrical-ros-gz
           source /opt/ros/lyrical/setup.bash
-          colcon build --symlink-install --packages-select course_description
+          colcon build --symlink-install --packages-up-to course_simulation
           source install/setup.bash
-          test -f "$(ros2 pkg prefix course_description)/share/course_description/urdf/vehicle.urdf.xacro"
-          test -f "$(ros2 pkg prefix course_description)/share/course_description/launch/display.launch.py"
-          test -f "$(ros2 pkg prefix course_description)/share/course_description/rviz/view.rviz"
-          python3 -m py_compile src/course_description/launch/display.launch.py
-          python3 -m py_compile src/course_description/test/test_description.py
-          xacro "$(ros2 pkg prefix course_description)/share/course_description/urdf/vehicle.urdf.xacro" > /tmp/vehicle.urdf
-          check_urdf /tmp/vehicle.urdf
-          colcon test --packages-select course_description --event-handlers console_direct+
+          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/launch/simulation.launch.py"
+          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/config/bridge.yaml"
+          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/config/bridge-broken.yaml"
+          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/worlds/mcity-minimal.sdf"
+          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/models/course_ackermann/model.sdf"
+          python3 -m py_compile src/course_simulation/launch/simulation.launch.py
+          python3 -m py_compile src/course_simulation/scripts/ackermann_adapter.py
+          python3 -m py_compile src/course_simulation/scripts/odom_adapter.py
+          python3 -m py_compile src/course_simulation/scripts/test_drive_source.py
+          colcon test --packages-select course_simulation --event-handlers console_direct+
           colcon test-result --verbose
 
-      - name: Check PR06 evidence
+      - name: Check PR07 evidence
         shell: bash
-        run: python3 .course-kit/v1/tools/check_practice.py PR06 --submission .
+        run: python3 .course-kit/v1/tools/check_practice.py PR07 --submission .

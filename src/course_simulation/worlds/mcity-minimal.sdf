@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<sdf version="1.10">
+  <world name="mcity_minimal">
+    <physics name="step" type="ignored"><max_step_size>0.001</max_step_size><real_time_factor>1.0</real_time_factor></physics>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"><render_engine>ogre2</render_engine></plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+
+    <gravity>0 0 -9.81</gravity>
+    <scene><ambient>0.55 0.55 0.55 1</ambient><background>0.12 0.16 0.22 1</background></scene>
+    <light name="sun" type="directional"><cast_shadows>true</cast_shadows><pose>0 0 10 0 0 0</pose><diffuse>0.9 0.9 0.85 1</diffuse><direction>-0.4 0.2 -1</direction></light>
+
+    <model name="ground">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision"><geometry><plane><normal>0 0 1</normal><size>30 20</size></plane></geometry></collision>
+        <visual name="visual"><geometry><plane><normal>0 0 1</normal><size>30 20</size></plane></geometry><material><diffuse>0.12 0.12 0.13 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- The collision geometry below is the source of the PR08 occupancy map. -->
+    <model name="corridor_north_wall">
+      <static>true</static>
+      <pose>4 2 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>12 0.5 1</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>12 0.5 1</size></box></geometry><material><diffuse>0.32 0.36 0.42 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="corridor_south_wall">
+      <static>true</static>
+      <pose>4 -2 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>12 0.5 1</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>12 0.5 1</size></box></geometry><material><diffuse>0.32 0.36 0.42 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="corridor_west_wall">
+      <static>true</static>
+      <pose>-2 0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.5 4.5 1</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.5 4.5 1</size></box></geometry><material><diffuse>0.32 0.36 0.42 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="corridor_east_wall">
+      <static>true</static>
+      <pose>10 0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.5 4.5 1</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.5 4.5 1</size></box></geometry><material><diffuse>0.32 0.36 0.42 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- Asymmetric wall-connected landmarks make the x coordinate observable. -->
+    <model name="localization_landmark_north_a">
+      <static>true</static>
+      <pose>1 1.5 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.5 0.5 0.8</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.5 0.5 0.8</size></box></geometry><material><diffuse>0.95 0.58 0.16 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="localization_landmark_south_a">
+      <static>true</static>
+      <pose>3.5 -1.5 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.5 0.5 0.8</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.5 0.5 0.8</size></box></geometry><material><diffuse>0.20 0.66 0.86 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="localization_landmark_north_b">
+      <static>true</static>
+      <pose>6.5 1.375 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.5 0.75 0.8</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.5 0.75 0.8</size></box></geometry><material><diffuse>0.72 0.42 0.90 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="localization_landmark_south_b">
+      <static>true</static>
+      <pose>8.25 -1.375 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.5 0.75 0.8</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.5 0.75 0.8</size></box></geometry><material><diffuse>0.25 0.78 0.46 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <model name="left_lane_line"><static>true</static><pose>4 0.8 0.006 0 0 0</pose><link name="link"><visual name="visual"><geometry><box><size>12 0.04 0.01</size></box></geometry><material><diffuse>0.95 0.95 0.85 1</diffuse></material></visual></link></model>
+    <model name="right_lane_line"><static>true</static><pose>4 -0.8 0.006 0 0 0</pose><link name="link"><visual name="visual"><geometry><box><size>12 0.04 0.01</size></box></geometry><material><diffuse>0.95 0.95 0.85 1</diffuse></material></visual></link></model>
+    <model name="finish_line"><static>true</static><pose>8 0 0.007 0 0 0</pose><link name="link"><visual name="visual"><geometry><box><size>0.12 1.6 0.012</size></box></geometry><material><diffuse>0.1 0.8 0.45 1</diffuse></material></visual></link></model>
+    <!-- include/pose overrides model/pose: start above the 0.12 m wheel radius. -->
+    <include><uri>model://course_ackermann</uri><pose>0 0 0.18 0 0 0</pose></include>
+  </world>
+</sdf>
