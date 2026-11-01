@@ -113,26 +113,58 @@ jobs:
       #   shell: bash
       #   run: python3 .course-kit/v1/tools/check_practice.py PR06 --submission .
 
-      - name: Build and Test PR07 course_simulation package
+      # - name: Build and Test PR07 course_simulation package
+      #   shell: bash
+      #   run: |
+      #     apt-get update
+      #     apt-get install -y --no-install-recommends ros-lyrical-ackermann-msgs ros-lyrical-ros-gz
+      #     source /opt/ros/lyrical/setup.bash
+      #     colcon build --symlink-install --packages-up-to course_simulation
+      #     source install/setup.bash
+      #     test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/launch/simulation.launch.py"
+      #     test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/config/bridge.yaml"
+      #     test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/config/bridge-broken.yaml"
+      #     test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/worlds/mcity-minimal.sdf"
+      #     test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/models/course_ackermann/model.sdf"
+      #     python3 -m py_compile src/course_simulation/launch/simulation.launch.py
+      #     python3 -m py_compile src/course_simulation/scripts/ackermann_adapter.py
+      #     python3 -m py_compile src/course_simulation/scripts/odom_adapter.py
+      #     python3 -m py_compile src/course_simulation/scripts/test_drive_source.py
+      #     colcon test --packages-select course_simulation --event-handlers console_direct+
+      #     colcon test-result --verbose
+
+      # - name: Check PR07 evidence
+      #   shell: bash
+      #   run: python3 .course-kit/v1/tools/check_practice.py PR07 --submission .
+
+      - name: Build and Test PR08 localization_case package
         shell: bash
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends ros-lyrical-ackermann-msgs ros-lyrical-ros-gz
+          apt-get install -y --no-install-recommends \
+            ros-lyrical-nav2-amcl \
+            ros-lyrical-nav2-map-server \
+            ros-lyrical-nav2-lifecycle-manager \
+            ros-lyrical-tf2-ros-py \
+            ros-lyrical-tf2-tools \
+            python3-yaml
           source /opt/ros/lyrical/setup.bash
-          colcon build --symlink-install --packages-up-to course_simulation
+          colcon build --symlink-install --packages-select localization_case
           source install/setup.bash
-          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/launch/simulation.launch.py"
-          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/config/bridge.yaml"
-          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/config/bridge-broken.yaml"
-          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/worlds/mcity-minimal.sdf"
-          test -f "$(ros2 pkg prefix course_simulation)/share/course_simulation/models/course_ackermann/model.sdf"
-          python3 -m py_compile src/course_simulation/launch/simulation.launch.py
-          python3 -m py_compile src/course_simulation/scripts/ackermann_adapter.py
-          python3 -m py_compile src/course_simulation/scripts/odom_adapter.py
-          python3 -m py_compile src/course_simulation/scripts/test_drive_source.py
-          colcon test --packages-select course_simulation --event-handlers console_direct+
+          test -f "$(ros2 pkg prefix localization_case)/share/localization_case/launch/localization.launch.py"
+          test -f "$(ros2 pkg prefix localization_case)/share/localization_case/config/amcl.yaml"
+          test -f "$(ros2 pkg prefix localization_case)/share/localization_case/config/amcl-defect.yaml"
+          test -x "$(ros2 pkg prefix localization_case)/lib/localization_case/localization_metrics.py"
+          python3 -m py_compile src/localization_case/launch/localization.launch.py
+          python3 -m py_compile src/localization_case/scripts/localization_metrics.py
+          colcon test --packages-select localization_case --event-handlers console_direct+
           colcon test-result --verbose
+          python3 .course-kit/v1/tools/validate_localization.py \
+            evidence/pr08/localization.json \
+            --schema .course-kit/v1/fixtures/pr08/localization-result-v1.schema.json \
+            --map-yaml evidence/pr08/map.yaml \
+            --map-pgm evidence/pr08/map.pgm
 
-      - name: Check PR07 evidence
+      - name: Check PR08 evidence
         shell: bash
-        run: python3 .course-kit/v1/tools/check_practice.py PR07 --submission .
+        run: python3 .course-kit/v1/tools/check_practice.py PR08 --submission .
